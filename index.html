@@ -95,6 +95,8 @@
   .learn-title{font-size:24px;font-weight:900;margin:0 0 14px;}
   .learn-text{font-size:16px;line-height:1.6;color:#3d4e58;margin:0 0 14px;}
   .learn-example{background:var(--sand-deep);border-radius:14px;padding:14px 16px;font-size:14px;color:var(--navy);font-weight:600;}
+  .learn-worked{background:#DFF6E7;border-radius:14px;padding:14px 16px;font-size:14px;color:#1F3B4D;font-weight:700;margin-top:10px;}
+  .learn-worked-label{font-size:11px;font-weight:900;color:#2f8f57;margin-bottom:6px;}
   .learn-hint-emoji{font-size:56px;margin-bottom:10px;}
   .learn-hint-word{font-size:26px;font-weight:900;font-family:'Fredoka',sans-serif;direction:ltr;}
   .learn-hint-he{font-size:16px;color:#6b7a82;margin-top:6px;font-weight:700;}
@@ -217,6 +219,7 @@
       <h3 class="learn-title" id="learnTitle"></h3>
       <p class="learn-text" id="learnText"></p>
       <div class="learn-example" id="learnExample"></div>
+      <div class="learn-worked hidden" id="learnWorkedWrap"><div class="learn-worked-label">🎯 פתרון בדיוק לתרגיל הזה</div><div id="learnWorked"></div></div>
     </div>
     <div id="learnHintView" class="hidden">
       <div class="learn-hint-emoji" id="hintEmoji"></div>
@@ -330,14 +333,15 @@ const CONCEPT_CARDS = {
     multiplication:{title:'כפל ✖️',text:'כפל הוא חיבור חוזר של אותו מספר כמה פעמים.',example:'לדוגמה: 3 × 4 זה כמו 3+3+3+3 = 12.'},
     division:{title:'חילוק ➗',text:'חילוק זה לפזר כמות שווה בין כמה קבוצות.',example:'לדוגמה: 12 ÷ 4 - מחלקים 12 עוגיות ל-4 ילדים, כל אחד מקבל 3.'},
     fractions:{title:'שברים 🍕',text:'שבר מתאר חלק מתוך שלם. המספר למעלה אומר כמה חלקים יש לנו, והמספר למטה אומר לכמה חלקים שווים חילקו את השלם.',example:'לדוגמה: 1/2 זה חצי מהעוגה - חילקנו אותה ל-2 חלקים ולקחנו 1.'},
-    percentages:{title:'אחוזים %',text:'אחוזים הם דרך לתאר חלק מתוך 100. יש כמה טריקים קלים: 10% = לחלק ב-10. 50% = לחלק ב-2 (חצי). 20% = לחלק ב-10 ואז להכפיל ב-2.',example:'לדוגמה: 10% מתוך 50 = 50 חלקי 10 = 5. וגם: 50% מתוך 40 = 40 חלקי 2 = 20.'}
+    percentages:{title:'אחוזים %',text:'אחוזים הם דרך לתאר חלק מתוך 100. יש כמה טריקים קלים: 10% = לחלק ב-10. 50% = לחלק ב-2 (חצי). 20% = לחלק ב-10 ואז להכפיל ב-2.',example:'לדוגמה: 10% מתוך 50 = 50 חלקי 10 = 5. וגם: 50% מתוך 40 = 40 חלקי 2 = 20.'},
+    timestable:{title:'לוח הכפל 🔢',text:'לוח הכפל הוא כל תוצאות הכפל של המספרים 1 עד 10 אחד בשני. חילוק הוא הפעולה ההפוכה לכפל - אם יודעים ש-6×7=42, אז אוטומטית יודעים גם ש-42÷7=6 וגם ש-42÷6=7.',example:'לדוגמה: 4×6=24, ולכן גם 24÷6=4 וגם 24÷4=6.'}
   },
   geo:{
     'shapes-basic':{title:'צורות 🔷',text:'לכל צורה יש מספר קבוע של צלעות (הקווים) וקודקודים (הפינות).',example:'למשולש יש 3 צלעות ו-3 קודקודים. לריבוע יש 4 מכל אחד. לעיגול אין בכלל צלעות.'},
-    perimeter:{title:'היקף 📏',text:'ההיקף הוא אורך המסלול סביב הצורה - מחברים את כל הצלעות ביחד.',example:'לדוגמה: מלבן עם אורך 6 ורוחב 3 - ההיקף הוא 6+6+3+3=18.'},
+    perimeter:{title:'היקף 📏',text:'ההיקף הוא אורך המסלול סביב הצורה - מחברים את כל הצלעות ביחד. בריבוע: צלע כפול 4 (כי כל הצלעות שוות). במלבן: (אורך + רוחב) כפול 2 (כי יש שני זוגות צלעות שוות).',example:'לדוגמה: ריבוע עם צלע 5 - ההיקף הוא 5×4=20. מלבן עם אורך 6 ורוחב 3 - ההיקף הוא (6+3)×2=18.'},
     symmetry:{title:'סימטריה ⚖️',text:'צורה סימטרית אפשר לחלק לשני חלקים זהים לגמרי, כמו במראה.',example:'לדוגמה: פרפר או ריבוע הם סימטריים.'},
     'shapes-props':{title:'תכונות צורות 🔶',text:'לכל צורה יש תכונות מיוחדות: אורך הצלעות, אם הן שוות, וכמה קודקודים יש לה.',example:'לדוגמה: בריבוע כל הצלעות שוות. במלבן יש 2 זוגות צלעות שוות.'},
-    area:{title:'שטח 📐',text:'השטח הוא כמה מקום יש בתוך הצורה. לרוב מכפילים אורך ברוחב.',example:'לדוגמה: מלבן עם אורך 5 ורוחב 3 - השטח הוא 5×3=15.'},
+    area:{title:'שטח 📐',text:'השטח הוא כמה מקום יש בתוך הצורה. בכל צורה יש נוסחה משלה: במלבן ובריבוע - אורך כפול רוחב (או צלע כפול צלע). אבל במשולש חשוב לזכור: קודם מכפילים בסיס כפול גובה, ואז חייבים לחלק ב-2! זה כי המשולש הוא בעצם חצי ממלבן.',example:'לדוגמה: מלבן עם אורך 5 ורוחב 3 - השטח הוא 5×3=15. אבל משולש עם בסיס 5 וגובה 4 - השטח הוא (5×4)÷2=10, ולא 20!'},
     angles:{title:'זוויות 📐',text:'זווית נוצרת בין שני קווים שנפגשים. זווית ישרה שווה ל-90 מעלות.',example:'לדוגמה: סכום כל הזוויות במשולש הוא תמיד 180 מעלות.'},
     circle:{title:'מעגל ⭕',text:'הרדיוס הוא הקו ממרכז המעגל לשפה שלו. הקוטר עובר דרך המרכז ומחבר שתי נקודות בהיקף - הוא כפול מהרדיוס.',example:'לדוגמה: אם הרדיוס הוא 5, הקוטר הוא 10.'},
     solids:{title:'גופים תלת-ממדיים 📦',text:'גוף תלת-ממדי הוא צורה עם עומק, כמו קובייה או כדור.',example:'לדוגמה: לקובייה יש 6 פאות, 8 קודקודים ו-12 צלעות.'}
@@ -372,82 +376,96 @@ function genMathL2(){
   if(type==='addition'){
     const a=randInt(1,19), b=randInt(1,Math.max(1,26-a)), correct=a+b;
     const mcq=buildMCQ(correct,[correct+1,correct-1,correct+2,correct-2,correct+10]);
-    return {emoji:'🍎', q:`${a} + ${b} = ?`, ...mcq, ltr:true, topic:'addition'};
+    return {emoji:'🍎', q:`${a} + ${b} = ?`, ...mcq, ltr:true, topic:'addition', worked:`מתחילים מ-${a} וסופרים עוד ${b}: ${a} + ${b} = ${correct}`};
   }
   if(type==='subtraction'){
     const a=randInt(8,26), b=randInt(1,a), correct=a-b;
     const mcq=buildMCQ(correct,[correct+1,correct-1,correct+2,correct-2,a,b]);
-    return {emoji:'🧮', q:`${a} - ${b} = ?`, ...mcq, ltr:true, topic:'subtraction'};
+    return {emoji:'🧮', q:`${a} - ${b} = ?`, ...mcq, ltr:true, topic:'subtraction', worked:`מתחילים מ-${a} וסופרים ${b} אחורה: ${a} - ${b} = ${correct}`};
   }
   if(type==='sequence'){
     const n=randInt(1,64), after=Math.random()<0.5, correct=after?n+1:n-1;
     const mcq=buildMCQ(correct,[n,n+2,n-2,correct+2]);
-    return {emoji:'🔢', q: after?`מה המספר שבא אחרי ${n}?`:`מה המספר שבא לפני ${n}?`, ...mcq, ltr:false, topic:'sequence'};
+    return {emoji:'🔢', q: after?`מה המספר שבא אחרי ${n}?`:`מה המספר שבא לפני ${n}?`, ...mcq, ltr:false, topic:'sequence', worked: after?`אחרי ${n} בא ${n}+1 = ${correct}`:`לפני ${n} בא ${n}-1 = ${correct}`};
   }
   const names=['דני','נועה','יובל','מאיה','תום','שירה'], items=['סוכריות','מדבקות','כדורים','פרחים','גולות','עפרונות'];
   const a=randInt(3,12), b=randInt(2,12), correct=a+b;
   const mcq=buildMCQ(correct,[correct+1,correct-1,correct+2,a,b]);
-  return {emoji:'🍭', q:`ל${pick(names)} יש ${a} ${pick(items)}, קיבל/ה עוד ${b}. כמה יש לו/לה בסה"כ?`, ...mcq, ltr:false, topic:'wordproblems'};
+  return {emoji:'🍭', q:`ל${pick(names)} יש ${a} ${pick(items)}, קיבל/ה עוד ${b}. כמה יש לו/לה בסה"כ?`, ...mcq, ltr:false, topic:'wordproblems', worked:`יש כבר ${a}, ומקבלים עוד ${b}. זה חיבור: ${a} + ${b} = ${correct}`};
 }
 function genMathL3(){
   const type = pick(['addition','subtraction','multiplication','multiplication','division','wordproblems']);
   if(type==='addition'){
     const a=randInt(10,90), b=randInt(10,90), correct=a+b;
     const mcq=buildMCQ(correct,[correct+1,correct-1,correct+10,correct-10]);
-    return {emoji:'🍩', q:`${a} + ${b} = ?`, ...mcq, ltr:true, topic:'addition'};
+    return {emoji:'🍩', q:`${a} + ${b} = ?`, ...mcq, ltr:true, topic:'addition', worked:`${a} + ${b} = ${correct}`};
   }
   if(type==='subtraction'){
     const a=randInt(30,99), b=randInt(10,a), correct=a-b;
     const mcq=buildMCQ(correct,[correct+1,correct-1,correct+10,correct-10]);
-    return {emoji:'🎯', q:`${a} - ${b} = ?`, ...mcq, ltr:true, topic:'subtraction'};
+    return {emoji:'🎯', q:`${a} - ${b} = ?`, ...mcq, ltr:true, topic:'subtraction', worked:`${a} - ${b} = ${correct}`};
   }
   if(type==='multiplication'){
     const tables=[2,3,4,5,10], a=pick(tables), b=randInt(2,10), correct=a*b;
     const mcq=buildMCQ(correct,[correct+a,correct-a,correct+b,a+b]);
-    return {emoji:'✖️', q:`${a} × ${b} = ?`, ...mcq, ltr:true, topic:'multiplication'};
+    return {emoji:'✖️', q:`${a} × ${b} = ?`, ...mcq, ltr:true, topic:'multiplication', worked:`${a} × ${b} פירושו ${a} ועוד ${a}, ${b} פעמים = ${correct}`};
   }
   if(type==='division'){
     const divisors=[2,3,4,5,10], d=pick(divisors), q_=randInt(2,10), a=d*q_;
     const mcq=buildMCQ(q_,[q_+1,q_-1,q_+2,d]);
-    return {emoji:'➗', q:`${a} ÷ ${d} = ?`, ...mcq, ltr:true, topic:'division'};
+    return {emoji:'➗', q:`${a} ÷ ${d} = ?`, ...mcq, ltr:true, topic:'division', worked:`${a} ÷ ${d} = ${q_}, כי ${d} × ${q_} = ${a}`};
   }
   const bags=randInt(2,6), each=randInt(5,15), correct=bags*each;
   const mcq=buildMCQ(correct,[correct+each,correct-each,bags+each]);
-  return {emoji:'🍬', q:`יש ${bags} שקיות עם ${each} סוכריות בכל אחת. כמה סה"כ?`, ...mcq, ltr:false, topic:'wordproblems'};
+  return {emoji:'🍬', q:`יש ${bags} שקיות עם ${each} סוכריות בכל אחת. כמה סה"כ?`, ...mcq, ltr:false, topic:'wordproblems', worked:`${bags} שקיות כפול ${each} סוכריות בכל שקית = ${bags} × ${each} = ${correct}`};
 }
 function genMathL5(){
-  const type = pick(['multiplication','division','fractions','addition','percentages','wordproblems']);
+  const type = pick(['multiplication','division','fractions','addition','percentages','wordproblems','timestable','timestable','timestable-div','timestable-div']);
+  if(type==='timestable'){
+    const a=randInt(1,10), b=randInt(1,10), correct=a*b;
+    const mcq=buildMCQ(correct,[correct+a,correct-a,correct+b,correct-b]);
+    return {emoji:'✖️', q:`${a} × ${b} = ?`, ...mcq, ltr:true, topic:'timestable', worked:`${a} × ${b} = ${correct} (זה חלק מלוח הכפל של ${a})`};
+  }
+  if(type==='timestable-div'){
+    const a=randInt(1,10), b=randInt(1,10), product=a*b;
+    const mcq=buildMCQ(a,[a+1,a-1,b,product]);
+    return {emoji:'➗', q:`${product} ÷ ${b} = ?`, ...mcq, ltr:true, topic:'timestable', worked:`${product} ÷ ${b} = ${a}, כי ${b} × ${a} = ${product} (לוח הכפל של ${b})`};
+  }
   if(type==='multiplication'){
     const a=randInt(11,20), b=randInt(4,12), correct=a*b;
     const mcq=buildMCQ(correct,[correct+a,correct-a,correct+10,correct-10]);
-    return {emoji:'✖️', q:`${a} × ${b} = ?`, ...mcq, ltr:true, topic:'multiplication'};
+    return {emoji:'✖️', q:`${a} × ${b} = ?`, ...mcq, ltr:true, topic:'multiplication', worked:`${a} × ${b} = ${correct}`};
   }
   if(type==='division'){
     const d=pick([2,3,4,5,6,8,9,12]), q_=randInt(4,15), a=d*q_;
     const mcq=buildMCQ(q_,[q_+1,q_-1,q_+2,d]);
-    return {emoji:'➗', q:`${a} ÷ ${d} = ?`, ...mcq, ltr:true, topic:'division'};
+    return {emoji:'➗', q:`${a} ÷ ${d} = ?`, ...mcq, ltr:true, topic:'division', worked:`${a} ÷ ${d} = ${q_}, כי ${d} × ${q_} = ${a}`};
   }
   if(type==='fractions'){
     const d=pick([4,5,6,8,10]), n1=randInt(1,d-2), n2=randInt(1,d-1-n1), correctN=n1+n2;
     const correct=`${correctN}/${d}`;
     const opts=shuffle([correct, `${correctN+1}/${d}`, `${n1+n2+1}/${d+1}`, `${n1}/${d}`]);
-    return {emoji:'🍕', q:`${n1}/${d} + ${n2}/${d} = ?`, opts, c:opts.indexOf(correct), ltr:true, topic:'fractions'};
+    return {emoji:'🍕', q:`${n1}/${d} + ${n2}/${d} = ?`, opts, c:opts.indexOf(correct), ltr:true, topic:'fractions', worked:`כשהמכנה (המספר למטה) שווה, פשוט מחברים את המספרים למעלה: ${n1}/${d} + ${n2}/${d} = (${n1}+${n2})/${d} = ${correctN}/${d}`};
   }
   if(type==='addition'){
     const a=randInt(100,600), b=randInt(100,400), correct=a+b;
     const mcq=buildMCQ(correct,[correct+10,correct-10,correct+1,correct-1]);
-    return {emoji:'🔢', q:`${a} + ${b} = ?`, ...mcq, ltr:true, topic:'addition'};
+    return {emoji:'🔢', q:`${a} + ${b} = ?`, ...mcq, ltr:true, topic:'addition', worked:`${a} + ${b} = ${correct}`};
   }
   if(type==='percentages'){
     const PERCENT_BASES={10:[20,30,40,50,60,70,80,90,100,120],50:[10,20,30,40,50,60,80,100],20:[10,15,20,25,30,40,50]};
     const percent=pick(Object.keys(PERCENT_BASES).map(Number)), base=pick(PERCENT_BASES[percent]);
     const correct=Math.round(base*percent/100);
     const mcq=buildMCQ(correct,[correct+5,correct-5,base/2,base/10]);
-    return {emoji:'🧮', q:`${percent}% מתוך ${base} = ?`, ...mcq, ltr:false, topic:'percentages'};
+    let workedText;
+    if(percent===10) workedText=`10% מ-${base} = ${base} ÷ 10 = ${correct}`;
+    else if(percent===50) workedText=`50% מ-${base} = ${base} ÷ 2 = ${correct}`;
+    else workedText=`20% מ-${base} = (${base} ÷ 10) × 2 = ${base/10} × 2 = ${correct}`;
+    return {emoji:'🧮', q:`${percent}% מתוך ${base} = ?`, ...mcq, ltr:false, topic:'percentages', worked:workedText};
   }
   const kids=randInt(2,6), each=randInt(5,20), total=kids*each;
   const mcq=buildMCQ(each,[each+1,each-1,each+2,kids]);
-  return {emoji:'🍫', q:`חילקו ${total} שוקולדים בין ${kids} ילדים בשווה. כמה כל אחד קיבל?`, ...mcq, ltr:false, topic:'wordproblems'};
+  return {emoji:'🍫', q:`חילקו ${total} שוקולדים בין ${kids} ילדים בשווה. כמה כל אחד קיבל?`, ...mcq, ltr:false, topic:'wordproblems', worked:`${total} ÷ ${kids} = ${each}, כי ${kids} × ${each} = ${total}`};
 }
 
 /* ===================== GEOMETRY GENERATORS ===================== */
@@ -466,6 +484,31 @@ function polygonPoints(n, cx, cy, r, rotationDeg){
     pts.push((cx+r*Math.cos(angle)).toFixed(1)+','+(cy+r*Math.sin(angle)).toFixed(1));
   }
   return pts.join(' ');
+}
+function rectSvgLabeled(l,w,color){
+  const ratio=Math.max(0.4,Math.min(2.5,l/w));
+  let rw=90, rh=Math.round(90/ratio); rh=Math.max(32,Math.min(76,rh));
+  const x=(140-rw)/2, y=(100-rh)/2-4;
+  return `<svg width="120" height="90" viewBox="0 0 140 100">
+    <rect x="${x}" y="${y}" width="${rw}" height="${rh}" rx="4" fill="${color}"/>
+    <text x="${x+rw/2}" y="${y-8}" font-size="14" text-anchor="middle" fill="#1F3B4D" font-weight="bold">${l}</text>
+    <text x="${x-12}" y="${y+rh/2+5}" font-size="14" text-anchor="middle" fill="#1F3B4D" font-weight="bold">${w}</text>
+  </svg>`;
+}
+function squareSvgLabeled(side,color){
+  return `<svg width="120" height="90" viewBox="0 0 140 100">
+    <rect x="45" y="18" width="58" height="58" rx="4" fill="${color}"/>
+    <text x="74" y="10" font-size="14" text-anchor="middle" fill="#1F3B4D" font-weight="bold">${side}</text>
+    <text x="33" y="51" font-size="14" text-anchor="middle" fill="#1F3B4D" font-weight="bold">${side}</text>
+  </svg>`;
+}
+function triangleSvgLabeled(base,height,color){
+  return `<svg width="120" height="90" viewBox="0 0 140 100">
+    <polygon points="28,86 112,86 70,18" fill="${color}"/>
+    <line x1="70" y1="18" x2="70" y2="86" stroke="#1F3B4D" stroke-width="1.5" stroke-dasharray="3,3"/>
+    <text x="70" y="98" font-size="12" text-anchor="middle" fill="#1F3B4D" font-weight="bold">בסיס ${base}</text>
+    <text x="98" y="55" font-size="12" text-anchor="middle" fill="#1F3B4D" font-weight="bold">גובה ${height}</text>
+  </svg>`;
 }
 function shapeSvg(shape){
   const c=shape.color;
@@ -519,12 +562,12 @@ function genGeoL3(){
   if(type==='perimeter-square'){
     const side=randInt(2,15), correct=side*4;
     const mcq=buildMCQ(correct,[side*2,side*3,correct+4,correct-4]);
-    return {emoji:'📏', q:`מה ההיקף של ריבוע עם צלע ${side} ס"מ?`, ...mcq, topic:'perimeter'};
+    return {iconSvg:squareSvgLabeled(side,'#FFC93C'), q:`מה ההיקף של ריבוע עם צלע ${side} ס"מ?`, ...mcq, topic:'perimeter', worked:`היקף ריבוע = צלע × 4 = ${side} × 4 = ${correct}`};
   }
   if(type==='perimeter-rect'){
     const l=randInt(4,20), w=randInt(2,l-1), correct=2*(l+w);
     const mcq=buildMCQ(correct,[l*w,l+w,correct+2,correct-2]);
-    return {emoji:'📐', q:`מלבן עם אורך ${l} ורוחב ${w} - מה ההיקף?`, ...mcq, topic:'perimeter'};
+    return {iconSvg:rectSvgLabeled(l,w,'#4FB6E8'), q:`מלבן עם אורך ${l} ורוחב ${w} - מה ההיקף?`, ...mcq, topic:'perimeter', worked:`היקף מלבן = (אורך + רוחב) × 2 = (${l} + ${w}) × 2 = ${l+w} × 2 = ${correct}`};
   }
   const item=pick(SHAPE_PROPS_L3);
   return {emoji:'🔷', q:item.q, opts:item.opts, c:item.c, topic:Math.random()<0.5?'symmetry':'shapes-props'};
@@ -538,26 +581,26 @@ const CONCEPT_L5_FIXED=[
   {q:'לקובייה יש כמה קודקודים?', opts:['4','6','8','12'], c:2, topic:'solids'}
 ];
 function genGeoL5(){
-  const type=pick(['area-rect','area-square','area-triangle','perimeter-rect','fixed']);
+  const type=pick(['area-rect','area-square','area-triangle','area-triangle','perimeter-rect','fixed']);
   if(type==='area-rect'){
     const l=randInt(3,20), w=randInt(2,15), correct=l*w;
     const mcq=buildMCQ(correct,[2*(l+w),l+w,correct+w,correct-l]);
-    return {emoji:'📐', q:`שטח מלבן עם אורך ${l} ורוחב ${w} הוא...`, ...mcq, topic:'area'};
+    return {iconSvg:rectSvgLabeled(l,w,'#4FB6E8'), q:`שטח מלבן עם אורך ${l} ורוחב ${w} הוא...`, ...mcq, topic:'area', worked:`שטח מלבן = אורך × רוחב = ${l} × ${w} = ${correct}`};
   }
   if(type==='area-square'){
     const side=randInt(2,15), correct=side*side;
     const mcq=buildMCQ(correct,[side*4,side*2,correct+side,correct-side]);
-    return {emoji:'⬜', q:`שטח ריבוע עם צלע ${side} ס"מ הוא...`, ...mcq, topic:'area'};
+    return {iconSvg:squareSvgLabeled(side,'#FFC93C'), q:`שטח ריבוע עם צלע ${side} ס"מ הוא...`, ...mcq, topic:'area', worked:`שטח ריבוע = צלע × צלע = ${side} × ${side} = ${correct}`};
   }
   if(type==='area-triangle'){
     let base=randInt(2,10)*2, height=randInt(2,16), product=base*height, correct=product/2;
     const mcq=buildMCQ(correct,[product,correct+2,correct-2,base+height]);
-    return {emoji:'🔺', q:`שטח משולש עם בסיס ${base} וגובה ${height} הוא...`, ...mcq, topic:'area'};
+    return {iconSvg:triangleSvgLabeled(base,height,'#FF6F61'), q:`שטח משולש עם בסיס ${base} וגובה ${height} הוא...`, ...mcq, topic:'area', worked:`שטח משולש = (בסיס × גובה) ÷ 2 = (${base} × ${height}) ÷ 2 = ${product} ÷ 2 = ${correct}. חשוב לא לשכוח לחלק ב-2!`};
   }
   if(type==='perimeter-rect'){
     const l=randInt(4,25), w=randInt(2,l-1), correct=2*(l+w);
     const mcq=buildMCQ(correct,[l*w,l+w,correct+2,correct-2]);
-    return {emoji:'📏', q:`מלבן עם אורך ${l} ורוחב ${w} - מה ההיקף?`, ...mcq, topic:'perimeter'};
+    return {iconSvg:rectSvgLabeled(l,w,'#4FB6E8'), q:`מלבן עם אורך ${l} ורוחב ${w} - מה ההיקף?`, ...mcq, topic:'perimeter', worked:`היקף מלבן = (אורך + רוחב) × 2 = (${l} + ${w}) × 2 = ${correct}`};
   }
   const item=pick(CONCEPT_L5_FIXED);
   return {emoji:'🔷', q:item.q, opts:item.opts, c:item.c, topic:item.topic};
@@ -813,11 +856,11 @@ function pairEngQuestion(list, promptTemplate, topic, emoji){
 }
 
 /* ===================== QUIZ ENGINE ===================== */
-let currentKid=null, currentSubject=null, currentQuestions=[], currentIndex=0, currentScore=0, totalStars=0;
-let progressByKid={}, history=[], reports=[];
+let currentKid=null, currentSubject=null, currentQuestions=[], currentIndex=0, currentScore=0, sessionStartTime=null;
+let progressByKid={}, history=[], reports=[], starsByKid={}, timeByKid={};
 const STORAGE_KEY='summerTrail_v1';
 function saveState(){
-  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify({progressByKid,history,totalStars,reports})); }catch(e){}
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify({progressByKid,history,reports,starsByKid,timeByKid})); }catch(e){}
 }
 function loadState(){
   try{
@@ -826,20 +869,31 @@ function loadState(){
       const data=JSON.parse(raw);
       progressByKid=data.progressByKid||{};
       history=data.history||[];
-      totalStars=data.totalStars||0;
       reports=data.reports||[];
+      starsByKid=data.starsByKid||{};
+      timeByKid=data.timeByKid||{};
     }
   }catch(e){}
 }
 function clearAllData(){
   if(confirm('לאפס את כל ההתקדמות והכוכבים של כל הילדים? לא ניתן לבטל.')){
-    progressByKid={}; history=[]; totalStars=0; reports=[];
+    progressByKid={}; history=[]; reports=[]; starsByKid={}; timeByKid={};
     try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
     updateStarsChip(); renderDashboard();
   }
 }
 function clearReports(){
   reports=[]; saveState(); renderDashboard();
+}
+function formatDuration(totalSeconds){
+  totalSeconds=Math.round(totalSeconds||0);
+  if(totalSeconds<60) return `${totalSeconds} שניות`;
+  const minutes=Math.round(totalSeconds/60);
+  if(minutes<60) return minutes===1 ? 'דקה אחת' : `${minutes} דקות`;
+  const hours=Math.floor(minutes/60), remMin=minutes%60;
+  const hoursText = hours===1 ? 'שעה אחת' : `${hours} שעות`;
+  const minText = remMin>0 ? ' ו-'+(remMin===1?'דקה אחת':remMin+' דקות') : '';
+  return hoursText+minText;
 }
 const GEN_MAP={
   math:{L2:genMathL2,L3:genMathL3,L5:genMathL5},
@@ -859,14 +913,14 @@ function buildQuizSet(genFn, n){
   return qs;
 }
 function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); }
-function goHome(){ currentKid=null; document.getElementById('playerName').textContent='בחר/י שחקן'; document.getElementById('playerAv').textContent='🙂'; showScreen('screen-select'); }
+function goHome(){ currentKid=null; document.getElementById('playerName').textContent='בחר/י שחקן'; document.getElementById('playerAv').textContent='🙂'; updateStarsChip(); showScreen('screen-select'); }
 function selectKid(kid){
   currentKid=kid; const k=KIDS[kid];
   document.getElementById('playerName').textContent=k.name;
   document.getElementById('playerAv').textContent=k.emoji;
   document.getElementById('hubTitle').textContent='השביל של '+k.name;
   if(!progressByKid[kid]) progressByKid[kid]={};
-  updateHubDescriptions(); updateHubProgress();
+  updateHubDescriptions(); updateHubProgress(); updateStarsChip();
   showScreen('screen-hub');
 }
 function showHub(){ updateHubDescriptions(); updateHubProgress(); showScreen('screen-hub'); }
@@ -886,7 +940,7 @@ function startQuiz(subject){
   currentSubject=subject; const level=KIDS[currentKid].level;
   if(subject==='eng' && (level==='L2'||level==='L3')){ showEnglishLearn(); return; }
   const genFn=GEN_MAP[subject][level];
-  currentQuestions=buildQuizSet(genFn,10); currentIndex=0; currentScore=0;
+  currentQuestions=buildQuizSet(genFn,10); currentIndex=0; currentScore=0; sessionStartTime=Date.now();
   showScreen('screen-quiz'); renderQuestion();
 }
 function renderQuestion(){
@@ -929,7 +983,7 @@ function selectAnswer(picked,correct,btnEl){
   const fb=document.getElementById('feedback');
   if(picked===correct){
     btnEl.classList.add('correct'); fb.textContent='כל הכבוד! תשובה נכונה 🎉'; fb.classList.add('good');
-    currentScore++; totalStars++; updateStarsChip();
+    currentScore++; starsByKid[currentKid]=(starsByKid[currentKid]||0)+1; updateStarsChip();
   } else {
     btnEl.classList.add('wrong'); fb.textContent='לא בדיוק... בפעם הבאה תצליח/י!'; fb.classList.add('bad');
     allBtns.forEach(b=>{ if(b.textContent===currentQuestions[currentIndex].opts[correct]) b.classList.add('correct'); });
@@ -947,7 +1001,9 @@ function finishQuiz(){
   if(!progressByKid[currentKid]) progressByKid[currentKid]={};
   const prev=progressByKid[currentKid][currentSubject]||0;
   progressByKid[currentKid][currentSubject]=Math.max(prev,frac);
-  history.push({kid:currentKid, subject:currentSubject, score:currentScore, total:currentQuestions.length, date:new Date().toISOString()});
+  const seconds = sessionStartTime ? Math.round((Date.now()-sessionStartTime)/1000) : 0;
+  timeByKid[currentKid]=(timeByKid[currentKid]||0)+seconds;
+  history.push({kid:currentKid, subject:currentSubject, score:currentScore, total:currentQuestions.length, date:new Date().toISOString(), seconds});
   if(history.length>300) history=history.slice(-300);
   saveState();
   document.getElementById('resultScore').textContent=currentScore+'/'+currentQuestions.length;
@@ -966,7 +1022,11 @@ function retryQuiz(){
   if(currentSubject==='eng' && (level==='L2'||level==='L3')){ startEngPractice(); return; }
   startQuiz(currentSubject);
 }
-function updateStarsChip(){ document.getElementById('starsChip').textContent='⭐ '+totalStars; saveState(); }
+function updateStarsChip(){
+  const count = currentKid ? (starsByKid[currentKid]||0) : 0;
+  document.getElementById('starsChip').textContent='⭐ '+count;
+  saveState();
+}
 
 /* ===== "לא מבין" learn card ===== */
 function openLearnCard(){
@@ -985,6 +1045,9 @@ function openLearnCard(){
     document.getElementById('learnText').textContent=card.text;
     document.getElementById('learnExample').textContent=card.example;
     document.getElementById('learnExample').style.display=card.example?'block':'none';
+    const workedWrap=document.getElementById('learnWorkedWrap');
+    if(q.worked){ document.getElementById('learnWorked').textContent=q.worked; workedWrap.classList.remove('hidden'); }
+    else { workedWrap.classList.add('hidden'); }
   }
   showScreen('screen-learn');
 }
@@ -1031,7 +1094,7 @@ function deckPrev(){ const items=DECKS[deckCategory]; deckIndex=(deckIndex-1+ite
 function deckNext(){ const items=DECKS[deckCategory]; deckIndex=(deckIndex+1)%items.length; renderDeck(); }
 function startEngPractice(){
   currentSubject='eng';
-  currentQuestions=buildQuizSet(genEngPractice,10); currentIndex=0; currentScore=0;
+  currentQuestions=buildQuizSet(genEngPractice,10); currentIndex=0; currentScore=0; sessionStartTime=Date.now();
   showScreen('screen-quiz'); renderQuestion();
 }
 
@@ -1042,20 +1105,35 @@ function renderDashboard(){
   let html='';
   Object.keys(KIDS).forEach(kidKey=>{
     const k=KIDS[kidKey], prog=progressByKid[kidKey]||{};
-    html+=`<div class="dash-card"><h3>${k.emoji} ${k.name}</h3><div class="dash-tags">`;
+    const allKidHistory=history.filter(h=>h.kid===kidKey);
+    const stars=starsByKid[kidKey]||0;
+    const totalSeconds=timeByKid[kidKey]||0;
+    const roundsPlayed=allKidHistory.length;
+    const totalCorrect=allKidHistory.reduce((s,h)=>s+h.score,0);
+    const totalQuestions=allKidHistory.reduce((s,h)=>s+h.total,0);
+    const avgPct=totalQuestions>0 ? Math.round((totalCorrect/totalQuestions)*100) : null;
+    html+=`<div class="dash-card"><h3>${k.emoji} ${k.name}</h3>
+      <div class="dash-tags" style="margin-bottom:12px;">
+        <div class="dash-tag">⭐ ${stars} כוכבים</div>
+        <div class="dash-tag">⏱️ ${formatDuration(totalSeconds)}</div>
+        <div class="dash-tag">🔁 ${roundsPlayed} סבבים</div>
+        ${avgPct!==null?`<div class="dash-tag">🎯 ${avgPct}% הצלחה כללית</div>`:''}
+      </div>
+      <div class="dash-tags">`;
     ['math','geo','heb','eng'].forEach(sub=>{
       const val=prog[sub];
       const pct = val!==undefined ? Math.round(val*100)+'%' : 'עוד לא שיחק/ה';
       html+=`<div class="dash-tag">${SUBJECT_NAMES[sub]}: ${pct}</div>`;
     });
     html+='</div>';
-    const kidHistory=history.filter(h=>h.kid===kidKey).slice(-8).reverse();
+    const kidHistory=allKidHistory.slice(-8).reverse();
     if(kidHistory.length){
       html+='<div class="dash-history">';
       kidHistory.forEach(h=>{
         const d=new Date(h.date);
         const dateStr=d.toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'});
-        html+=`<div class="dash-history-row"><span>${SUBJECT_NAMES[h.subject]}</span><span>${h.score}/${h.total}</span><span>${dateStr}</span></div>`;
+        const timeStr = h.seconds ? ' · '+formatDuration(h.seconds) : '';
+        html+=`<div class="dash-history-row"><span>${SUBJECT_NAMES[h.subject]}</span><span>${h.score}/${h.total}${timeStr}</span><span>${dateStr}</span></div>`;
       });
       html+='</div>';
     } else {
