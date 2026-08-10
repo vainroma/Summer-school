@@ -350,6 +350,7 @@ const CONCEPT_CARDS = {
     plural:{title:'רבים 👨‍👩‍👧‍👦',text:'רבים זה כשיש יותר מדבר אחד. בעברית לרוב מוסיפים "ים" או "ות" בסוף המילה.',example:'לדוגמה: ילד -> ילדים, ילדה -> ילדות.'},
     letters:{title:'אותיות א-ב 🔤',text:'לכל מילה יש אות ראשונה ואות אחרונה. חשוב לשים לב לסדר האותיות באלף-בית.',example:'לדוגמה: המילה "שמש" מתחילה ומסתיימת באות ש.'},
     categories:{title:'קבוצות מילים 🧩',text:'אפשר לחלק מילים לקבוצות לפי המשמעות שלהן - חיות, צבעים, פעולות וחפצים.',example:'לדוגמה: "כלב" היא חיה, "אדום" הוא צבע, "רץ" היא פעולה.'},
+    reading:{title:'הבנת הנקרא 📖',text:'כשקוראים משפט קצר, חשוב לשים לב לפרטים - מי עשה מה, איפה, ומתי. התשובה תמיד נמצאת בתוך המשפט עצמו, רק צריך לקרוא בעיון.',example:'לדוגמה: "רון שתה מיץ תפוזים בבוקר" - אם שואלים "מה רון שתה?" התשובה היא "מיץ תפוזים", כי זה בדיוק מה שכתוב במשפט.'},
     gender:{title:'זכר ונקבה ♀️♂️',text:'במילים בעברית יש צורת זכר וצורת נקבה. לרוב מוסיפים "ה" או "ת" בסוף כדי ליצור נקבה.',example:'לדוגמה: מלך -> מלכה, כלב -> כלבה.'},
     synonym:{title:'מילים נרדפות 📗',text:'מילים נרדפות הן מילים שונות שיש להן משמעות דומה.',example:'לדוגמה: "שמח" ו"עליז" הן מילים נרדפות.'},
     antonym:{title:'ניגודים 🔄',text:'מילה מנוגדת (הפך) היא מילה שהמשמעות שלה הפוכה לגמרי.',example:'לדוגמה: ההפך מ"גדול" הוא "קטן".'},
@@ -622,8 +623,44 @@ const CATEGORY_L2={
   objects:['שולחן','כיסא','ספר','תיק','עט','דלת','חלון','מיטה','כדור','בובה']
 };
 const ALEPH_BET=['א','ב','ג','ד','ה','ו','ז','ח','ט','י','כ','ל','מ','נ','ס','ע','פ','צ','ק','ר','ש','ת'];
+const VERB_SENTENCES_L2=[
+  {s:'הילד קופץ בגן',verb:'קופץ',others:['ילד','גן']},
+  {s:'הכלב רץ מהר',verb:'רץ',others:['כלב','מהר']},
+  {s:'אמא מבשלת ארוחת צהריים',verb:'מבשלת',others:['אמא','ארוחה']},
+  {s:'הציפור שרה בבוקר',verb:'שרה',others:['ציפור','בוקר']},
+  {s:'דני קורא ספר מעניין',verb:'קורא',others:['דני','ספר']},
+  {s:'הילדים משחקים בכדור',verb:'משחקים',others:['ילדים','כדור']},
+  {s:'החתול ישן על הכיסא',verb:'ישן',others:['חתול','כיסא']},
+  {s:'המורה כותבת על הלוח',verb:'כותבת',others:['מורה','לוח']},
+  {s:'אני שותה מים קרים',verb:'שותה',others:['אני','מים']},
+  {s:'הדג שוחה באגם',verb:'שוחה',others:['דג','אגם']}
+];
+const READING_L2=[
+  {s:'דני אכל תפוח אדום בארוחת הבוקר.',q:'מה דני אכל?',correct:'תפוח',distractors:['לחם','עוגה','בננה']},
+  {s:'נועה שיחקה עם הכדור הכחול בגינה.',q:'באיזה צבע היה הכדור?',correct:'כחול',distractors:['אדום','ירוק','צהוב']},
+  {s:'הכלב של יובל אוהב לרוץ בפארק.',q:'למי יש כלב?',correct:'יובל',distractors:['נועה','דני','מאיה']},
+  {s:'מאיה ציירה ציור יפה עם 3 פרחים.',q:'כמה פרחים ציירה מאיה?',correct:'3',distractors:['2','4','5']},
+  {s:'תום קרא ספר על חלל וכוכבים.',q:'על מה תום קרא?',correct:'חלל וכוכבים',distractors:['ים ודגים','חיות בר','משחקי כדור']},
+  {s:'שירה הלכה לבית הספר ברגל בבוקר.',q:'איך שירה הגיעה לבית הספר?',correct:'ברגל',distractors:['באוטובוס','באופניים','ברכב']},
+  {s:'לדני יש חתול לבן ושמו פלאפי.',q:'איך קוראים לחתול של דני?',correct:'פלאפי',distractors:['מיצי','שלגי','כדורי']},
+  {s:'אנאל אכלה גלידת שוקולד ביום חם.',q:'איזה טעם גלידה אכלה אנאל?',correct:'שוקולד',distractors:['וניל','תות','לימון']}
+];
 function genHebL2(){
-  const type=pick(['plural','first-letter','last-letter','category','singular-or-plural','antonym-simple']);
+  const type=pick(['plural','plural','gender','category','verb-in-sentence','verb-in-sentence','reading','reading','verb-or-noun','singular-or-plural','antonym-simple','first-letter','last-letter']);
+  if(type==='gender') return pairQuestion(GENDER_L3, w=>`מה הצורה הנגדית (זכר/נקבה) של המילה "${w}"?`, 'gender', '♀️');
+  if(type==='verb-in-sentence'){
+    const item=pick(VERB_SENTENCES_L2), opts=shuffle([item.verb,...item.others]);
+    return {emoji:'🔤', q:`באיזו מילה במשפט "${item.s}" יש פועל (מילת פעולה)?`, opts, c:opts.indexOf(item.verb), topic:'partofspeech'};
+  }
+  if(type==='reading'){
+    const item=pick(READING_L2), opts=shuffle([item.correct,...item.distractors]);
+    return {emoji:'📖', q:`${item.s} ${item.q}`, opts, c:opts.indexOf(item.correct), topic:'reading'};
+  }
+  if(type==='verb-or-noun'){
+    const isVerb=Math.random()<0.5;
+    const word=isVerb?pick(CATEGORY_L2.actions):pick([...CATEGORY_L2.objects,...CATEGORY_L2.animals]);
+    return {emoji:'📚', q:`האם המילה "${word}" היא פעולה או דבר (שם עצם)?`, opts:['פעולה','דבר (שם עצם)'], c:isVerb?0:1, topic:'partofspeech'};
+  }
   if(type==='antonym-simple'){
     const pair=pick(ANTONYMS_L3), reverse=Math.random()<0.5;
     const from=reverse?pair[1]:pair[0], correct=reverse?pair[0]:pair[1];
