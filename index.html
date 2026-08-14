@@ -263,6 +263,9 @@
     <div><h2 class="trail-title">מעקב הורים 📊</h2><p class="trail-sub">התקדמות וביצועים - נשמר במכשיר הזה</p></div>
     <button class="back-btn" onclick="goHome()">↩ חזרה</button>
   </div>
+  <div class="dash-card" style="background:var(--sand-deep);box-shadow:none;">
+    <p style="margin:0;font-size:13px;line-height:1.6;">📱 <b>חשוב לדעת:</b> הנתונים כאן נשמרים במכשיר הספציפי הזה בלבד. אם ילד/ה משחק/ת ממכשיר אחר, לחצי על <b>"📤 שלח דוח"</b> ליד השם שלו/ה - זה יפתח הודעת WhatsApp מוכנה עם כל הפרטים, כדי לשלוח אליך.</p>
+  </div>
   <div id="dashboardContent"></div>
   <button class="ghost-btn" style="display:block;margin:24px auto 0;" onclick="clearAllData()">איפוס כל הנתונים</button>
 </div>
@@ -278,6 +281,7 @@
       <button class="next-btn" onclick="retryQuiz()">לנסות שוב</button>
       <button class="ghost-btn" onclick="showHub()">חזרה לשביל</button>
     </div>
+    <button class="speak-btn small" style="background:var(--grass);box-shadow:0 3px 0 #3d8a5c;" onclick="shareKidReport(currentKid)">📤 שלח דוח להורים</button>
   </div>
 </div>
 
@@ -373,55 +377,60 @@ const CONCEPT_CARDS = {
 
 /* ===================== MATH GENERATORS ===================== */
 function genMathL2(){
-  const type = pick(['addition','addition','subtraction','subtraction','sequence','wordproblems']);
+  const type = pick(['addition','addition','subtraction','subtraction','sequence','wordproblems','intro-multiply']);
   if(type==='addition'){
-    const a=randInt(1,19), b=randInt(1,Math.max(1,26-a)), correct=a+b;
+    const a=randInt(2,26), b=randInt(1,Math.max(1,36-a)), correct=a+b;
     const mcq=buildMCQ(correct,[correct+1,correct-1,correct+2,correct-2,correct+10]);
     return {emoji:'🍎', q:`${a} + ${b} = ?`, ...mcq, ltr:true, topic:'addition', worked:`מתחילים מ-${a} וסופרים עוד ${b}: ${a} + ${b} = ${correct}`};
   }
   if(type==='subtraction'){
-    const a=randInt(8,26), b=randInt(1,a), correct=a-b;
+    const a=randInt(12,36), b=randInt(1,a), correct=a-b;
     const mcq=buildMCQ(correct,[correct+1,correct-1,correct+2,correct-2,a,b]);
     return {emoji:'🧮', q:`${a} - ${b} = ?`, ...mcq, ltr:true, topic:'subtraction', worked:`מתחילים מ-${a} וסופרים ${b} אחורה: ${a} - ${b} = ${correct}`};
   }
   if(type==='sequence'){
-    const n=randInt(1,64), after=Math.random()<0.5, correct=after?n+1:n-1;
+    const n=randInt(1,90), after=Math.random()<0.5, correct=after?n+1:n-1;
     const mcq=buildMCQ(correct,[n,n+2,n-2,correct+2]);
     return {emoji:'🔢', q: after?`מה המספר שבא אחרי ${n}?`:`מה המספר שבא לפני ${n}?`, ...mcq, ltr:false, topic:'sequence', worked: after?`אחרי ${n} בא ${n}+1 = ${correct}`:`לפני ${n} בא ${n}-1 = ${correct}`};
   }
+  if(type==='intro-multiply'){
+    const a=randInt(2,5), b=randInt(2,5), correct=a*b;
+    const mcq=buildMCQ(correct,[correct+a,correct-a,a+b,correct+1]);
+    return {emoji:'✖️', q:`${a} × ${b} = ?`, ...mcq, ltr:true, topic:'multiplication', worked:`${a} × ${b} זה כמו לחבר ${a} עם עצמו ${b} פעמים = ${correct}`};
+  }
   const names=['דני','נועה','יובל','מאיה','תום','שירה'], items=['סוכריות','מדבקות','כדורים','פרחים','גולות','עפרונות'];
-  const a=randInt(3,12), b=randInt(2,12), correct=a+b;
+  const a=randInt(4,17), b=randInt(3,17), correct=a+b;
   const mcq=buildMCQ(correct,[correct+1,correct-1,correct+2,a,b]);
   return {emoji:'🍭', q:`ל${pick(names)} יש ${a} ${pick(items)}, קיבל/ה עוד ${b}. כמה יש לו/לה בסה"כ?`, ...mcq, ltr:false, topic:'wordproblems', worked:`יש כבר ${a}, ומקבלים עוד ${b}. זה חיבור: ${a} + ${b} = ${correct}`};
 }
 function genMathL3(){
   const type = pick(['addition','subtraction','multiplication','multiplication','division','wordproblems']);
   if(type==='addition'){
-    const a=randInt(10,90), b=randInt(10,90), correct=a+b;
+    const a=randInt(15,110), b=randInt(15,110), correct=a+b;
     const mcq=buildMCQ(correct,[correct+1,correct-1,correct+10,correct-10]);
     return {emoji:'🍩', q:`${a} + ${b} = ?`, ...mcq, ltr:true, topic:'addition', worked:`${a} + ${b} = ${correct}`};
   }
   if(type==='subtraction'){
-    const a=randInt(30,99), b=randInt(10,a), correct=a-b;
+    const a=randInt(40,120), b=randInt(10,a), correct=a-b;
     const mcq=buildMCQ(correct,[correct+1,correct-1,correct+10,correct-10]);
     return {emoji:'🎯', q:`${a} - ${b} = ?`, ...mcq, ltr:true, topic:'subtraction', worked:`${a} - ${b} = ${correct}`};
   }
   if(type==='multiplication'){
-    const tables=[2,3,4,5,10], a=pick(tables), b=randInt(2,10), correct=a*b;
+    const tables=[2,3,4,5,6,7,8,9,10], a=pick(tables), b=randInt(2,12), correct=a*b;
     const mcq=buildMCQ(correct,[correct+a,correct-a,correct+b,a+b]);
     return {emoji:'✖️', q:`${a} × ${b} = ?`, ...mcq, ltr:true, topic:'multiplication', worked:`${a} × ${b} פירושו ${a} ועוד ${a}, ${b} פעמים = ${correct}`};
   }
   if(type==='division'){
-    const divisors=[2,3,4,5,10], d=pick(divisors), q_=randInt(2,10), a=d*q_;
+    const divisors=[2,3,4,5,6,7,8,9,10], d=pick(divisors), q_=randInt(2,12), a=d*q_;
     const mcq=buildMCQ(q_,[q_+1,q_-1,q_+2,d]);
     return {emoji:'➗', q:`${a} ÷ ${d} = ?`, ...mcq, ltr:true, topic:'division', worked:`${a} ÷ ${d} = ${q_}, כי ${d} × ${q_} = ${a}`};
   }
-  const bags=randInt(2,6), each=randInt(5,15), correct=bags*each;
+  const bags=randInt(2,8), each=randInt(5,18), correct=bags*each;
   const mcq=buildMCQ(correct,[correct+each,correct-each,bags+each]);
   return {emoji:'🍬', q:`יש ${bags} שקיות עם ${each} סוכריות בכל אחת. כמה סה"כ?`, ...mcq, ltr:false, topic:'wordproblems', worked:`${bags} שקיות כפול ${each} סוכריות בכל שקית = ${bags} × ${each} = ${correct}`};
 }
 function genMathL5(){
-  const type = pick(['multiplication','division','fractions','addition','percentages','wordproblems','timestable','timestable','timestable-div','timestable-div']);
+  const type = pick(['multiplication','multiplication','division','division','fractions','fractions','addition','percentages','wordproblems','wordproblems','timestable','timestable-div']);
   if(type==='timestable'){
     const a=randInt(1,10), b=randInt(1,10), correct=a*b;
     const mcq=buildMCQ(correct,[correct+a,correct-a,correct+b,correct-b]);
@@ -433,23 +442,23 @@ function genMathL5(){
     return {emoji:'➗', q:`${product} ÷ ${b} = ?`, ...mcq, ltr:true, topic:'timestable', worked:`${product} ÷ ${b} = ${a}, כי ${b} × ${a} = ${product} (לוח הכפל של ${b})`};
   }
   if(type==='multiplication'){
-    const a=randInt(11,20), b=randInt(4,12), correct=a*b;
+    const a=randInt(13,26), b=randInt(5,15), correct=a*b;
     const mcq=buildMCQ(correct,[correct+a,correct-a,correct+10,correct-10]);
     return {emoji:'✖️', q:`${a} × ${b} = ?`, ...mcq, ltr:true, topic:'multiplication', worked:`${a} × ${b} = ${correct}`};
   }
   if(type==='division'){
-    const d=pick([2,3,4,5,6,8,9,12]), q_=randInt(4,15), a=d*q_;
+    const d=pick([2,3,4,5,6,7,8,9,12,15]), q_=randInt(4,18), a=d*q_;
     const mcq=buildMCQ(q_,[q_+1,q_-1,q_+2,d]);
     return {emoji:'➗', q:`${a} ÷ ${d} = ?`, ...mcq, ltr:true, topic:'division', worked:`${a} ÷ ${d} = ${q_}, כי ${d} × ${q_} = ${a}`};
   }
   if(type==='fractions'){
-    const d=pick([4,5,6,8,10]), n1=randInt(1,d-2), n2=randInt(1,d-1-n1), correctN=n1+n2;
+    const d=pick([4,5,6,8,10,12]), n1=randInt(1,d-2), n2=randInt(1,d-1-n1), correctN=n1+n2;
     const correct=`${correctN}/${d}`;
     const opts=shuffle([correct, `${correctN+1}/${d}`, `${n1+n2+1}/${d+1}`, `${n1}/${d}`]);
     return {emoji:'🍕', q:`${n1}/${d} + ${n2}/${d} = ?`, opts, c:opts.indexOf(correct), ltr:true, topic:'fractions', worked:`כשהמכנה (המספר למטה) שווה, פשוט מחברים את המספרים למעלה: ${n1}/${d} + ${n2}/${d} = (${n1}+${n2})/${d} = ${correctN}/${d}`};
   }
   if(type==='addition'){
-    const a=randInt(100,600), b=randInt(100,400), correct=a+b;
+    const a=randInt(120,720), b=randInt(120,480), correct=a+b;
     const mcq=buildMCQ(correct,[correct+10,correct-10,correct+1,correct-1]);
     return {emoji:'🔢', q:`${a} + ${b} = ?`, ...mcq, ltr:true, topic:'addition', worked:`${a} + ${b} = ${correct}`};
   }
@@ -464,7 +473,7 @@ function genMathL5(){
     else workedText=`20% מ-${base} = (${base} ÷ 10) × 2 = ${base/10} × 2 = ${correct}`;
     return {emoji:'🧮', q:`${percent}% מתוך ${base} = ?`, ...mcq, ltr:false, topic:'percentages', worked:workedText};
   }
-  const kids=randInt(2,6), each=randInt(5,20), total=kids*each;
+  const kids=randInt(2,8), each=randInt(6,24), total=kids*each;
   const mcq=buildMCQ(each,[each+1,each-1,each+2,kids]);
   return {emoji:'🍫', q:`חילקו ${total} שוקולדים בין ${kids} ילדים בשווה. כמה כל אחד קיבל?`, ...mcq, ltr:false, topic:'wordproblems', worked:`${total} ÷ ${kids} = ${each}, כי ${kids} × ${each} = ${total}`};
 }
@@ -520,7 +529,12 @@ function shapeSvg(shape){
   return `<svg width="46" height="46" viewBox="0 0 100 100"><polygon points="${pts}" fill="${c}"/></svg>`;
 }
 function genGeoL2(){
-  const type = pick(['sides','corners','name-by-sides','round','count-total','compare-sides']);
+  const type = pick(['sides','corners','name-by-sides','round','count-total','compare-sides','mini-perimeter']);
+  if(type==='mini-perimeter'){
+    const side=randInt(2,7), correct=side*4;
+    const mcq=buildMCQ(correct,[side*2,side*3,correct+2,correct-2]);
+    return {iconSvg:squareSvgLabeled(side,'#FFC93C'), q:`מה ההיקף של ריבוע עם צלע ${side}? (רמז: מחברים את 4 הצלעות)`, ...mcq, topic:'shapes-basic', worked:`היקף = ${side} + ${side} + ${side} + ${side} = ${correct}`};
+  }
   if(type==='compare-sides'){
     const withSides=SHAPES.filter(s=>s.sides>0);
     const s1=pick(withSides), s2=pick(withSides.filter(s=>s.sides!==s1.sides));
@@ -529,7 +543,7 @@ function genGeoL2(){
     return {emoji:'📐', q:`לאיזו צורה יש יותר צלעות: ${s1.name} או ${s2.name}?`, opts, c:opts.indexOf(correct), topic:'shapes-basic'};
   }
   if(type==='count-total'){
-    const shape=pick(SHAPES.filter(s=>s.sides>0)), count=randInt(2,5), correct=shape.sides*count;
+    const shape=pick(SHAPES.filter(s=>s.sides>0)), count=randInt(2,7), correct=shape.sides*count;
     const mcq=buildMCQ(correct,[correct+shape.sides,correct-shape.sides,count,shape.sides]);
     return {iconSvg:shapeSvg(shape), q:`אם יש ${count} צורות של ${shape.name}, כמה צלעות יש בסך הכל?`, ...mcq, topic:'shapes-basic'};
   }
@@ -561,12 +575,12 @@ const SHAPE_PROPS_L3=[
 function genGeoL3(){
   const type=pick(['perimeter-square','perimeter-rect','props']);
   if(type==='perimeter-square'){
-    const side=randInt(2,15), correct=side*4;
+    const side=randInt(3,18), correct=side*4;
     const mcq=buildMCQ(correct,[side*2,side*3,correct+4,correct-4]);
     return {iconSvg:squareSvgLabeled(side,'#FFC93C'), q:`מה ההיקף של ריבוע עם צלע ${side} ס"מ?`, ...mcq, topic:'perimeter', worked:`היקף ריבוע = צלע × 4 = ${side} × 4 = ${correct}`};
   }
   if(type==='perimeter-rect'){
-    const l=randInt(4,20), w=randInt(2,l-1), correct=2*(l+w);
+    const l=randInt(5,24), w=randInt(2,l-1), correct=2*(l+w);
     const mcq=buildMCQ(correct,[l*w,l+w,correct+2,correct-2]);
     return {iconSvg:rectSvgLabeled(l,w,'#4FB6E8'), q:`מלבן עם אורך ${l} ורוחב ${w} - מה ההיקף?`, ...mcq, topic:'perimeter', worked:`היקף מלבן = (אורך + רוחב) × 2 = (${l} + ${w}) × 2 = ${l+w} × 2 = ${correct}`};
   }
@@ -584,22 +598,22 @@ const CONCEPT_L5_FIXED=[
 function genGeoL5(){
   const type=pick(['area-rect','area-square','area-triangle','area-triangle','perimeter-rect','fixed']);
   if(type==='area-rect'){
-    const l=randInt(3,20), w=randInt(2,15), correct=l*w;
+    const l=randInt(4,24), w=randInt(3,18), correct=l*w;
     const mcq=buildMCQ(correct,[2*(l+w),l+w,correct+w,correct-l]);
     return {iconSvg:rectSvgLabeled(l,w,'#4FB6E8'), q:`שטח מלבן עם אורך ${l} ורוחב ${w} הוא...`, ...mcq, topic:'area', worked:`שטח מלבן = אורך × רוחב = ${l} × ${w} = ${correct}`};
   }
   if(type==='area-square'){
-    const side=randInt(2,15), correct=side*side;
+    const side=randInt(3,18), correct=side*side;
     const mcq=buildMCQ(correct,[side*4,side*2,correct+side,correct-side]);
     return {iconSvg:squareSvgLabeled(side,'#FFC93C'), q:`שטח ריבוע עם צלע ${side} ס"מ הוא...`, ...mcq, topic:'area', worked:`שטח ריבוע = צלע × צלע = ${side} × ${side} = ${correct}`};
   }
   if(type==='area-triangle'){
-    let base=randInt(2,10)*2, height=randInt(2,16), product=base*height, correct=product/2;
+    let base=randInt(3,12)*2, height=randInt(3,19), product=base*height, correct=product/2;
     const mcq=buildMCQ(correct,[product,correct+2,correct-2,base+height]);
     return {iconSvg:triangleSvgLabeled(base,height,'#FF6F61'), q:`שטח משולש עם בסיס ${base} וגובה ${height} הוא...`, ...mcq, topic:'area', worked:`שטח משולש = (בסיס × גובה) ÷ 2 = (${base} × ${height}) ÷ 2 = ${product} ÷ 2 = ${correct}. חשוב לא לשכוח לחלק ב-2!`};
   }
   if(type==='perimeter-rect'){
-    const l=randInt(4,25), w=randInt(2,l-1), correct=2*(l+w);
+    const l=randInt(5,30), w=randInt(2,l-1), correct=2*(l+w);
     const mcq=buildMCQ(correct,[l*w,l+w,correct+2,correct-2]);
     return {iconSvg:rectSvgLabeled(l,w,'#4FB6E8'), q:`מלבן עם אורך ${l} ורוחב ${w} - מה ההיקף?`, ...mcq, topic:'perimeter', worked:`היקף מלבן = (אורך + רוחב) × 2 = (${l} + ${w}) × 2 = ${correct}`};
   }
@@ -646,7 +660,13 @@ const READING_L2=[
   {s:'אנאל אכלה גלידת שוקולד ביום חם.',q:'איזה טעם גלידה אכלה אנאל?',correct:'שוקולד',distractors:['וניל','תות','לימון']}
 ];
 function genHebL2(){
-  const type=pick(['plural','plural','gender','category','verb-in-sentence','verb-in-sentence','reading','reading','verb-or-noun','singular-or-plural','antonym-simple','first-letter','last-letter']);
+  const type=pick(['plural','plural','plural-hard','gender','gender','category','verb-in-sentence','verb-in-sentence','reading','reading','verb-or-noun','singular-or-plural','antonym-simple','first-letter']);
+  if(type==='plural-hard'){
+    const pair=pick(PLURAL_L3), correct=pair[1];
+    const distractors=shuffle(PLURAL_L3.map(p=>p[1]).filter(p=>p!==correct)).slice(0,3);
+    const opts=shuffle([correct,...distractors]);
+    return {emoji:'📖', q:`מה רבים של המילה "${pair[0]}"?`, opts, c:opts.indexOf(correct), topic:'plural'};
+  }
   if(type==='gender') return pairQuestion(GENDER_L3, w=>`מה הצורה הנגדית (זכר/נקבה) של המילה "${w}"?`, 'gender', '♀️');
   if(type==='verb-in-sentence'){
     const item=pick(VERB_SENTENCES_L2), opts=shuffle([item.verb,...item.others]);
@@ -718,11 +738,17 @@ function pairQuestion(list, promptTemplate, topic, emoji, allowReverse){
   return {emoji, q:promptTemplate(from), opts, c:opts.indexOf(correct), topic};
 }
 function genHebL3(){
-  const type=pick(['gender','plural','synonym','antonym','tense']);
+  const type=pick(['gender','plural','synonym','antonym','tense','partofspeech']);
   if(type==='gender') return pairQuestion(GENDER_L3, w=>`מה הצורה הנגדית (זכר/נקבה) של המילה "${w}"?`, 'gender', '♀️');
   if(type==='plural') return pairQuestion(PLURAL_L3.map(p=>[p[0],p[1]]), w=>`מה רבים של המילה "${w}"?`, 'plural', '📖', false);
   if(type==='synonym') return pairQuestion(SYNONYMS_L3, w=>`איזו מילה נרדפת (דומה במשמעות) למילה "${w}"?`, 'synonym', '📗');
   if(type==='antonym') return pairQuestion(ANTONYMS_L3, w=>`מה ההפך (ניגוד) מהמילה "${w}"?`, 'antonym', '🔄');
+  if(type==='partofspeech'){
+    const keys=Object.keys(POS_L5), target=pick(keys), correct=pick(POS_L5[target]);
+    const otherWords=keys.filter(k=>k!==target).flatMap(k=>POS_L5[k]);
+    const distractors=shuffle(otherWords).slice(0,3), opts=shuffle([correct,...distractors]);
+    return {emoji:'📚', q:`איזו מהמילים הבאות היא ${target}?`, opts, c:opts.indexOf(correct), topic:'partofspeech'};
+  }
   const item=pick(TENSE_L3), opts=['עבר','הווה','עתיד'];
   return {emoji:'⏰', q:`"${item.s}" - באיזה זמן המשפט?`, opts, c:opts.indexOf(item.ans), topic:'tense'};
 }
@@ -1137,6 +1163,37 @@ function startEngPractice(){
 
 /* ===== Parent dashboard ===== */
 function openDashboard(){ renderDashboard(); showScreen('screen-dashboard'); }
+function shareKidReport(kidKey){
+  const k=KIDS[kidKey], prog=progressByKid[kidKey]||{};
+  const allKidHistory=history.filter(h=>h.kid===kidKey);
+  const stars=starsByKid[kidKey]||0, totalSeconds=timeByKid[kidKey]||0, rounds=allKidHistory.length;
+  const totalCorrect=allKidHistory.reduce((s,h)=>s+h.score,0), totalQuestions=allKidHistory.reduce((s,h)=>s+h.total,0);
+  const avgPct=totalQuestions>0?Math.round((totalCorrect/totalQuestions)*100):null;
+  const now=new Date();
+  let text=`📊 דוח התקדמות - ${k.name}\n(נכון ל-${now.toLocaleDateString('he-IL')} ${now.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'})})\n\n`;
+  text+=`⭐ ${stars} כוכבים | ⏱️ ${formatDuration(totalSeconds)} | 🔁 ${rounds} סבבים`;
+  if(avgPct!==null) text+=` | 🎯 ${avgPct}% הצלחה כללית`;
+  text+='\n\nלפי נושא:\n';
+  ['math','geo','heb','eng'].forEach(sub=>{
+    const val=prog[sub];
+    text+=`${SUBJECT_NAMES[sub]}: ${val!==undefined?Math.round(val*100)+'%':'עוד לא שיחק/ה'}\n`;
+  });
+  const recent=allKidHistory.slice(-5).reverse();
+  if(recent.length){
+    text+='\n5 המשחקים האחרונים:\n';
+    recent.forEach(h=>{
+      const d=new Date(h.date);
+      text+=`${d.toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit'})} - ${SUBJECT_NAMES[h.subject]} - ${h.score}/${h.total}\n`;
+    });
+  }
+  if(navigator.share){
+    navigator.share({title:'דוח התקדמות - '+k.name, text}).catch(()=>{});
+  } else if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(()=>alert('הדוח הועתק! אפשר להדביק אותו בהודעת WhatsApp.')).catch(()=>alert(text));
+  } else {
+    alert(text);
+  }
+}
 function renderDashboard(){
   const container=document.getElementById('dashboardContent');
   let html='';
@@ -1163,6 +1220,7 @@ function renderDashboard(){
       html+=`<div class="dash-tag">${SUBJECT_NAMES[sub]}: ${pct}</div>`;
     });
     html+='</div>';
+    html+=`<button class="speak-btn small" style="background:var(--grass);box-shadow:0 3px 0 #3d8a5c;" onclick="shareKidReport('${kidKey}')">📤 שלח דוח על ${k.name}</button>`;
     const kidHistory=allKidHistory.slice(-8).reverse();
     if(kidHistory.length){
       html+='<div class="dash-history">';
