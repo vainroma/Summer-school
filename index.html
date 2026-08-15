@@ -219,7 +219,7 @@
       <h3 class="learn-title" id="learnTitle"></h3>
       <p class="learn-text" id="learnText"></p>
       <div class="learn-example" id="learnExample"></div>
-      <div class="learn-worked hidden" id="learnWorkedWrap"><div class="learn-worked-label">🎯 פתרון בדיוק לתרגיל הזה</div><div id="learnWorked"></div></div>
+      <div class="learn-worked hidden" id="learnWorkedWrap"><div class="learn-worked-label">💡 דוגמה דומה (לא התרגיל הזה)</div><div id="learnWorked"></div></div>
     </div>
     <div id="learnHintView" class="hidden">
       <div class="learn-hint-emoji" id="hintEmoji"></div>
@@ -338,7 +338,8 @@ const CONCEPT_CARDS = {
     division:{title:'חילוק ➗',text:'חילוק זה לפזר כמות שווה בין כמה קבוצות.',example:'לדוגמה: 12 ÷ 4 - מחלקים 12 עוגיות ל-4 ילדים, כל אחד מקבל 3.'},
     fractions:{title:'שברים 🍕',text:'שבר מתאר חלק מתוך שלם. המספר למעלה אומר כמה חלקים יש לנו, והמספר למטה אומר לכמה חלקים שווים חילקו את השלם.',example:'לדוגמה: 1/2 זה חצי מהעוגה - חילקנו אותה ל-2 חלקים ולקחנו 1.'},
     percentages:{title:'אחוזים %',text:'אחוזים הם דרך לתאר חלק מתוך 100. יש כמה טריקים קלים: 10% = לחלק ב-10. 50% = לחלק ב-2 (חצי). 20% = לחלק ב-10 ואז להכפיל ב-2.',example:'לדוגמה: 10% מתוך 50 = 50 חלקי 10 = 5. וגם: 50% מתוך 40 = 40 חלקי 2 = 20.'},
-    timestable:{title:'לוח הכפל 🔢',text:'לוח הכפל הוא כל תוצאות הכפל של המספרים 1 עד 10 אחד בשני. חילוק הוא הפעולה ההפוכה לכפל - אם יודעים ש-6×7=42, אז אוטומטית יודעים גם ש-42÷7=6 וגם ש-42÷6=7.',example:'לדוגמה: 4×6=24, ולכן גם 24÷6=4 וגם 24÷4=6.'}
+    timestable:{title:'לוח הכפל 🔢',text:'לוח הכפל הוא כל תוצאות הכפל של המספרים 1 עד 10 אחד בשני. חילוק הוא הפעולה ההפוכה לכפל - אם יודעים ש-6×7=42, אז אוטומטית יודעים גם ש-42÷7=6 וגם ש-42÷6=7.',example:'לדוגמה: 4×6=24, ולכן גם 24÷6=4 וגם 24÷4=6.'},
+    hundreds:{title:'חישובים עם מאות 💯',text:'כשעובדים עם מספרים גדולים (מאות), הכי קל לפרק אותם: קודם מחברים/מחסרים את המאות, ואז את מה שנשאר.',example:'לדוגמה: 400+320 - קודם 400+300=700, ואז +20=720. וגם: 600-250 - קודם 600-200=400, ואז -50=350.'}
   },
   geo:{
     'shapes-basic':{title:'צורות 🔷',text:'לכל צורה יש מספר קבוע של צלעות (הקווים) וקודקודים (הפינות).',example:'למשולש יש 3 צלעות ו-3 קודקודים. לריבוע יש 4 מכל אחד. לעיגול אין בכלל צלעות.'},
@@ -381,101 +382,109 @@ function genMathL2(){
   if(type==='addition'){
     const a=randInt(2,26), b=randInt(1,Math.max(1,36-a)), correct=a+b;
     const mcq=buildMCQ(correct,[correct+1,correct-1,correct+2,correct-2,correct+10]);
-    return {emoji:'🍎', q:`${a} + ${b} = ?`, ...mcq, ltr:true, topic:'addition', worked:`מתחילים מ-${a} וסופרים עוד ${b}: ${a} + ${b} = ${correct}`};
+    return {emoji:'🍎', q:`${a} + ${b} = ?`, ...mcq, ltr:true, topic:'addition', worked:`דוגמה אחרת: 8 + 5 - סופרים מ-8 ועוד 5 צעדים: 9,10,11,12,13. התשובה 13.`};
   }
   if(type==='subtraction'){
     const a=randInt(12,36), b=randInt(1,a), correct=a-b;
     const mcq=buildMCQ(correct,[correct+1,correct-1,correct+2,correct-2,a,b]);
-    return {emoji:'🧮', q:`${a} - ${b} = ?`, ...mcq, ltr:true, topic:'subtraction', worked:`מתחילים מ-${a} וסופרים ${b} אחורה: ${a} - ${b} = ${correct}`};
+    return {emoji:'🧮', q:`${a} - ${b} = ?`, ...mcq, ltr:true, topic:'subtraction', worked:`דוגמה אחרת: 12 - 4 - סופרים 4 צעדים אחורה מ-12: 11,10,9,8. התשובה 8.`};
   }
   if(type==='sequence'){
     const n=randInt(1,90), after=Math.random()<0.5, correct=after?n+1:n-1;
     const mcq=buildMCQ(correct,[n,n+2,n-2,correct+2]);
-    return {emoji:'🔢', q: after?`מה המספר שבא אחרי ${n}?`:`מה המספר שבא לפני ${n}?`, ...mcq, ltr:false, topic:'sequence', worked: after?`אחרי ${n} בא ${n}+1 = ${correct}`:`לפני ${n} בא ${n}-1 = ${correct}`};
+    return {emoji:'🔢', q: after?`מה המספר שבא אחרי ${n}?`:`מה המספר שבא לפני ${n}?`, ...mcq, ltr:false, topic:'sequence', worked:`דוגמה אחרת: אחרי 9 בא 10 (9+1). לפני 9 בא 8 (9-1).`};
   }
   if(type==='intro-multiply'){
-    const a=randInt(2,5), b=randInt(2,5), correct=a*b;
-    const mcq=buildMCQ(correct,[correct+a,correct-a,a+b,correct+1]);
-    return {emoji:'✖️', q:`${a} × ${b} = ?`, ...mcq, ltr:true, topic:'multiplication', worked:`${a} × ${b} זה כמו לחבר ${a} עם עצמו ${b} פעמים = ${correct}`};
+    const n=randInt(1,10), orderFlip=Math.random()<0.5;
+    const a=orderFlip?2:n, b=orderFlip?n:2, correct=2*n;
+    const mcq=buildMCQ(correct,[correct+2,correct-2,n+2,correct+1]);
+    return {emoji:'✖️', q:`${a} × ${b} = ?`, ...mcq, ltr:true, topic:'multiplication', worked:`דוגמה אחרת: 2 × 4 זה כמו לחבר 2 עם עצמו 4 פעמים: 2+2+2+2=8.`};
   }
   const names=['דני','נועה','יובל','מאיה','תום','שירה'], items=['סוכריות','מדבקות','כדורים','פרחים','גולות','עפרונות'];
   const a=randInt(4,17), b=randInt(3,17), correct=a+b;
   const mcq=buildMCQ(correct,[correct+1,correct-1,correct+2,a,b]);
-  return {emoji:'🍭', q:`ל${pick(names)} יש ${a} ${pick(items)}, קיבל/ה עוד ${b}. כמה יש לו/לה בסה"כ?`, ...mcq, ltr:false, topic:'wordproblems', worked:`יש כבר ${a}, ומקבלים עוד ${b}. זה חיבור: ${a} + ${b} = ${correct}`};
+  return {emoji:'🍭', q:`ל${pick(names)} יש ${a} ${pick(items)}, קיבל/ה עוד ${b}. כמה יש לו/לה בסה"כ?`, ...mcq, ltr:false, topic:'wordproblems', worked:`דוגמה אחרת: יש 4 ומקבלים עוד 3: זה חיבור, 4+3=7.`};
 }
 function genMathL3(){
-  const type = pick(['addition','subtraction','multiplication','multiplication','division','wordproblems']);
+  const type = pick(['addition','subtraction','multiplication','multiplication','division','wordproblems','hundreds-add','hundreds-sub']);
   if(type==='addition'){
     const a=randInt(15,110), b=randInt(15,110), correct=a+b;
     const mcq=buildMCQ(correct,[correct+1,correct-1,correct+10,correct-10]);
-    return {emoji:'🍩', q:`${a} + ${b} = ?`, ...mcq, ltr:true, topic:'addition', worked:`${a} + ${b} = ${correct}`};
+    return {emoji:'🍩', q:`${a} + ${b} = ?`, ...mcq, ltr:true, topic:'addition', worked:`דוגמה אחרת: 34 + 58 = 92.`};
   }
   if(type==='subtraction'){
     const a=randInt(40,120), b=randInt(10,a), correct=a-b;
     const mcq=buildMCQ(correct,[correct+1,correct-1,correct+10,correct-10]);
-    return {emoji:'🎯', q:`${a} - ${b} = ?`, ...mcq, ltr:true, topic:'subtraction', worked:`${a} - ${b} = ${correct}`};
+    return {emoji:'🎯', q:`${a} - ${b} = ?`, ...mcq, ltr:true, topic:'subtraction', worked:`דוגמה אחרת: 76 - 29 = 47.`};
+  }
+  if(type==='hundreds-add'){
+    const a=randInt(2,8)*100+pick([0,10,20,30,40,50]), b=randInt(1,7)*100+pick([0,10,20,30,40,50]), correct=a+b;
+    const mcq=buildMCQ(correct,[correct+10,correct-10,correct+100,correct-100]);
+    return {emoji:'💯', q:`${a} + ${b} = ?`, ...mcq, ltr:true, topic:'hundreds', worked:`דוגמה אחרת: 300 + 250 = 550. חושבים קודם על המאות (300+200=500) ואז מוסיפים את השאר (50).`};
+  }
+  if(type==='hundreds-sub'){
+    const a=randInt(3,9)*100+pick([0,10,20,30,40,50]), b=randInt(1,a/100|0)*100+pick([0,10,20,30,40,50]);
+    const bClamped=Math.min(b,a-10), correct=a-bClamped;
+    const mcq=buildMCQ(correct,[correct+10,correct-10,correct+100,correct-100]);
+    return {emoji:'💯', q:`${a} - ${bClamped} = ?`, ...mcq, ltr:true, topic:'hundreds', worked:`דוגמה אחרת: 500 - 180 = 320. אפשר לחסר קודם 100 (500-100=400) ואז עוד 80 (400-80=320).`};
   }
   if(type==='multiplication'){
     const tables=[2,3,4,5,6,7,8,9,10], a=pick(tables), b=randInt(2,12), correct=a*b;
     const mcq=buildMCQ(correct,[correct+a,correct-a,correct+b,a+b]);
-    return {emoji:'✖️', q:`${a} × ${b} = ?`, ...mcq, ltr:true, topic:'multiplication', worked:`${a} × ${b} פירושו ${a} ועוד ${a}, ${b} פעמים = ${correct}`};
+    return {emoji:'✖️', q:`${a} × ${b} = ?`, ...mcq, ltr:true, topic:'multiplication', worked:`דוגמה אחרת: 6 × 7 פירושו 6 ועוד 6, 7 פעמים = 42.`};
   }
   if(type==='division'){
     const divisors=[2,3,4,5,6,7,8,9,10], d=pick(divisors), q_=randInt(2,12), a=d*q_;
     const mcq=buildMCQ(q_,[q_+1,q_-1,q_+2,d]);
-    return {emoji:'➗', q:`${a} ÷ ${d} = ?`, ...mcq, ltr:true, topic:'division', worked:`${a} ÷ ${d} = ${q_}, כי ${d} × ${q_} = ${a}`};
+    return {emoji:'➗', q:`${a} ÷ ${d} = ?`, ...mcq, ltr:true, topic:'division', worked:`דוגמה אחרת: 42 ÷ 6 = 7, כי 6 × 7 = 42.`};
   }
   const bags=randInt(2,8), each=randInt(5,18), correct=bags*each;
   const mcq=buildMCQ(correct,[correct+each,correct-each,bags+each]);
-  return {emoji:'🍬', q:`יש ${bags} שקיות עם ${each} סוכריות בכל אחת. כמה סה"כ?`, ...mcq, ltr:false, topic:'wordproblems', worked:`${bags} שקיות כפול ${each} סוכריות בכל שקית = ${bags} × ${each} = ${correct}`};
+  return {emoji:'🍬', q:`יש ${bags} שקיות עם ${each} סוכריות בכל אחת. כמה סה"כ?`, ...mcq, ltr:false, topic:'wordproblems', worked:`דוגמה אחרת: 3 שקיות עם 8 סוכריות בכל אחת = 3 × 8 = 24.`};
 }
 function genMathL5(){
   const type = pick(['multiplication','multiplication','division','division','fractions','fractions','addition','percentages','wordproblems','wordproblems','timestable','timestable-div']);
   if(type==='timestable'){
     const a=randInt(1,10), b=randInt(1,10), correct=a*b;
     const mcq=buildMCQ(correct,[correct+a,correct-a,correct+b,correct-b]);
-    return {emoji:'✖️', q:`${a} × ${b} = ?`, ...mcq, ltr:true, topic:'timestable', worked:`${a} × ${b} = ${correct} (זה חלק מלוח הכפל של ${a})`};
+    return {emoji:'✖️', q:`${a} × ${b} = ?`, ...mcq, ltr:true, topic:'timestable', worked:`דוגמה אחרת: 4 × 6 = 24 (חלק מלוח הכפל של 4).`};
   }
   if(type==='timestable-div'){
     const a=randInt(1,10), b=randInt(1,10), product=a*b;
     const mcq=buildMCQ(a,[a+1,a-1,b,product]);
-    return {emoji:'➗', q:`${product} ÷ ${b} = ?`, ...mcq, ltr:true, topic:'timestable', worked:`${product} ÷ ${b} = ${a}, כי ${b} × ${a} = ${product} (לוח הכפל של ${b})`};
+    return {emoji:'➗', q:`${product} ÷ ${b} = ?`, ...mcq, ltr:true, topic:'timestable', worked:`דוגמה אחרת: 24 ÷ 6 = 4, כי 6 × 4 = 24.`};
   }
   if(type==='multiplication'){
     const a=randInt(13,26), b=randInt(5,15), correct=a*b;
     const mcq=buildMCQ(correct,[correct+a,correct-a,correct+10,correct-10]);
-    return {emoji:'✖️', q:`${a} × ${b} = ?`, ...mcq, ltr:true, topic:'multiplication', worked:`${a} × ${b} = ${correct}`};
+    return {emoji:'✖️', q:`${a} × ${b} = ?`, ...mcq, ltr:true, topic:'multiplication', worked:`דוגמה אחרת: 14 × 6 = 84.`};
   }
   if(type==='division'){
     const d=pick([2,3,4,5,6,7,8,9,12,15]), q_=randInt(4,18), a=d*q_;
     const mcq=buildMCQ(q_,[q_+1,q_-1,q_+2,d]);
-    return {emoji:'➗', q:`${a} ÷ ${d} = ?`, ...mcq, ltr:true, topic:'division', worked:`${a} ÷ ${d} = ${q_}, כי ${d} × ${q_} = ${a}`};
+    return {emoji:'➗', q:`${a} ÷ ${d} = ?`, ...mcq, ltr:true, topic:'division', worked:`דוגמה אחרת: 96 ÷ 8 = 12, כי 8 × 12 = 96.`};
   }
   if(type==='fractions'){
     const d=pick([4,5,6,8,10,12]), n1=randInt(1,d-2), n2=randInt(1,d-1-n1), correctN=n1+n2;
     const correct=`${correctN}/${d}`;
     const opts=shuffle([correct, `${correctN+1}/${d}`, `${n1+n2+1}/${d+1}`, `${n1}/${d}`]);
-    return {emoji:'🍕', q:`${n1}/${d} + ${n2}/${d} = ?`, opts, c:opts.indexOf(correct), ltr:true, topic:'fractions', worked:`כשהמכנה (המספר למטה) שווה, פשוט מחברים את המספרים למעלה: ${n1}/${d} + ${n2}/${d} = (${n1}+${n2})/${d} = ${correctN}/${d}`};
+    return {emoji:'🍕', q:`${n1}/${d} + ${n2}/${d} = ?`, opts, c:opts.indexOf(correct), ltr:true, topic:'fractions', worked:`דוגמה אחרת: 2/6 + 3/6 = 5/6 (כשהמכנה שווה, פשוט מחברים את המספרים למעלה).`};
   }
   if(type==='addition'){
     const a=randInt(120,720), b=randInt(120,480), correct=a+b;
     const mcq=buildMCQ(correct,[correct+10,correct-10,correct+1,correct-1]);
-    return {emoji:'🔢', q:`${a} + ${b} = ?`, ...mcq, ltr:true, topic:'addition', worked:`${a} + ${b} = ${correct}`};
+    return {emoji:'🔢', q:`${a} + ${b} = ?`, ...mcq, ltr:true, topic:'addition', worked:`דוגמה אחרת: 245 + 318 = 563.`};
   }
   if(type==='percentages'){
     const PERCENT_BASES={10:[20,30,40,50,60,70,80,90,100,120],50:[10,20,30,40,50,60,80,100],20:[10,15,20,25,30,40,50]};
     const percent=pick(Object.keys(PERCENT_BASES).map(Number)), base=pick(PERCENT_BASES[percent]);
     const correct=Math.round(base*percent/100);
     const mcq=buildMCQ(correct,[correct+5,correct-5,base/2,base/10]);
-    let workedText;
-    if(percent===10) workedText=`10% מ-${base} = ${base} ÷ 10 = ${correct}`;
-    else if(percent===50) workedText=`50% מ-${base} = ${base} ÷ 2 = ${correct}`;
-    else workedText=`20% מ-${base} = (${base} ÷ 10) × 2 = ${base/10} × 2 = ${correct}`;
-    return {emoji:'🧮', q:`${percent}% מתוך ${base} = ?`, ...mcq, ltr:false, topic:'percentages', worked:workedText};
+    return {emoji:'🧮', q:`${percent}% מתוך ${base} = ?`, ...mcq, ltr:false, topic:'percentages', worked:`דוגמה אחרת: 10% מ-80 = 80÷10=8. וגם 50% מ-60 = 60÷2=30.`};
   }
   const kids=randInt(2,8), each=randInt(6,24), total=kids*each;
   const mcq=buildMCQ(each,[each+1,each-1,each+2,kids]);
-  return {emoji:'🍫', q:`חילקו ${total} שוקולדים בין ${kids} ילדים בשווה. כמה כל אחד קיבל?`, ...mcq, ltr:false, topic:'wordproblems', worked:`${total} ÷ ${kids} = ${each}, כי ${kids} × ${each} = ${total}`};
+  return {emoji:'🍫', q:`חילקו ${total} שוקולדים בין ${kids} ילדים בשווה. כמה כל אחד קיבל?`, ...mcq, ltr:false, topic:'wordproblems', worked:`דוגמה אחרת: חילקו 30 שוקולדים בין 5 ילדים: 30÷5=6 לכל אחד.`};
 }
 
 /* ===================== GEOMETRY GENERATORS ===================== */
@@ -533,7 +542,7 @@ function genGeoL2(){
   if(type==='mini-perimeter'){
     const side=randInt(2,7), correct=side*4;
     const mcq=buildMCQ(correct,[side*2,side*3,correct+2,correct-2]);
-    return {iconSvg:squareSvgLabeled(side,'#FFC93C'), q:`מה ההיקף של ריבוע עם צלע ${side}? (רמז: מחברים את 4 הצלעות)`, ...mcq, topic:'shapes-basic', worked:`היקף = ${side} + ${side} + ${side} + ${side} = ${correct}`};
+    return {iconSvg:squareSvgLabeled(side,'#FFC93C'), q:`מה ההיקף של ריבוע עם צלע ${side}? (רמז: מחברים את 4 הצלעות)`, ...mcq, topic:'shapes-basic', worked:`דוגמה אחרת: ריבוע עם צלע 3: היקף = 3+3+3+3 = 12.`};
   }
   if(type==='compare-sides'){
     const withSides=SHAPES.filter(s=>s.sides>0);
@@ -577,12 +586,12 @@ function genGeoL3(){
   if(type==='perimeter-square'){
     const side=randInt(3,18), correct=side*4;
     const mcq=buildMCQ(correct,[side*2,side*3,correct+4,correct-4]);
-    return {iconSvg:squareSvgLabeled(side,'#FFC93C'), q:`מה ההיקף של ריבוע עם צלע ${side} ס"מ?`, ...mcq, topic:'perimeter', worked:`היקף ריבוע = צלע × 4 = ${side} × 4 = ${correct}`};
+    return {iconSvg:squareSvgLabeled(side,'#FFC93C'), q:`מה ההיקף של ריבוע עם צלע ${side} ס"מ?`, ...mcq, topic:'perimeter', worked:`דוגמה אחרת: ריבוע עם צלע 5 - היקף = צלע × 4 = 5 × 4 = 20.`};
   }
   if(type==='perimeter-rect'){
     const l=randInt(5,24), w=randInt(2,l-1), correct=2*(l+w);
     const mcq=buildMCQ(correct,[l*w,l+w,correct+2,correct-2]);
-    return {iconSvg:rectSvgLabeled(l,w,'#4FB6E8'), q:`מלבן עם אורך ${l} ורוחב ${w} - מה ההיקף?`, ...mcq, topic:'perimeter', worked:`היקף מלבן = (אורך + רוחב) × 2 = (${l} + ${w}) × 2 = ${l+w} × 2 = ${correct}`};
+    return {iconSvg:rectSvgLabeled(l,w,'#4FB6E8'), q:`מלבן עם אורך ${l} ורוחב ${w} - מה ההיקף?`, ...mcq, topic:'perimeter', worked:`דוגמה אחרת: מלבן עם אורך 6 ורוחב 3 - היקף = (אורך + רוחב) × 2 = (6+3) × 2 = 18.`};
   }
   const item=pick(SHAPE_PROPS_L3);
   return {emoji:'🔷', q:item.q, opts:item.opts, c:item.c, topic:Math.random()<0.5?'symmetry':'shapes-props'};
@@ -600,22 +609,22 @@ function genGeoL5(){
   if(type==='area-rect'){
     const l=randInt(4,24), w=randInt(3,18), correct=l*w;
     const mcq=buildMCQ(correct,[2*(l+w),l+w,correct+w,correct-l]);
-    return {iconSvg:rectSvgLabeled(l,w,'#4FB6E8'), q:`שטח מלבן עם אורך ${l} ורוחב ${w} הוא...`, ...mcq, topic:'area', worked:`שטח מלבן = אורך × רוחב = ${l} × ${w} = ${correct}`};
+    return {iconSvg:rectSvgLabeled(l,w,'#4FB6E8'), q:`שטח מלבן עם אורך ${l} ורוחב ${w} הוא...`, ...mcq, topic:'area', worked:`דוגמה אחרת: מלבן עם אורך 5 ורוחב 3 - שטח = אורך × רוחב = 5 × 3 = 15.`};
   }
   if(type==='area-square'){
     const side=randInt(3,18), correct=side*side;
     const mcq=buildMCQ(correct,[side*4,side*2,correct+side,correct-side]);
-    return {iconSvg:squareSvgLabeled(side,'#FFC93C'), q:`שטח ריבוע עם צלע ${side} ס"מ הוא...`, ...mcq, topic:'area', worked:`שטח ריבוע = צלע × צלע = ${side} × ${side} = ${correct}`};
+    return {iconSvg:squareSvgLabeled(side,'#FFC93C'), q:`שטח ריבוע עם צלע ${side} ס"מ הוא...`, ...mcq, topic:'area', worked:`דוגמה אחרת: ריבוע עם צלע 4 - שטח = צלע × צלע = 4 × 4 = 16.`};
   }
   if(type==='area-triangle'){
     let base=randInt(3,12)*2, height=randInt(3,19), product=base*height, correct=product/2;
     const mcq=buildMCQ(correct,[product,correct+2,correct-2,base+height]);
-    return {iconSvg:triangleSvgLabeled(base,height,'#FF6F61'), q:`שטח משולש עם בסיס ${base} וגובה ${height} הוא...`, ...mcq, topic:'area', worked:`שטח משולש = (בסיס × גובה) ÷ 2 = (${base} × ${height}) ÷ 2 = ${product} ÷ 2 = ${correct}. חשוב לא לשכוח לחלק ב-2!`};
+    return {iconSvg:triangleSvgLabeled(base,height,'#FF6F61'), q:`שטח משולש עם בסיס ${base} וגובה ${height} הוא...`, ...mcq, topic:'area', worked:`דוגמה אחרת: משולש עם בסיס 6 וגובה 4 - שטח = (בסיס × גובה) ÷ 2 = (6×4)÷2 = 24÷2 = 12. חשוב לא לשכוח לחלק ב-2!`};
   }
   if(type==='perimeter-rect'){
     const l=randInt(5,30), w=randInt(2,l-1), correct=2*(l+w);
     const mcq=buildMCQ(correct,[l*w,l+w,correct+2,correct-2]);
-    return {iconSvg:rectSvgLabeled(l,w,'#4FB6E8'), q:`מלבן עם אורך ${l} ורוחב ${w} - מה ההיקף?`, ...mcq, topic:'perimeter', worked:`היקף מלבן = (אורך + רוחב) × 2 = (${l} + ${w}) × 2 = ${correct}`};
+    return {iconSvg:rectSvgLabeled(l,w,'#4FB6E8'), q:`מלבן עם אורך ${l} ורוחב ${w} - מה ההיקף?`, ...mcq, topic:'perimeter', worked:`דוגמה אחרת: מלבן עם אורך 7 ורוחב 4 - היקף = (7+4) × 2 = 22.`};
   }
   const item=pick(CONCEPT_L5_FIXED);
   return {emoji:'🔷', q:item.q, opts:item.opts, c:item.c, topic:item.topic};
@@ -965,15 +974,33 @@ const GEN_MAP={
   eng:{L5:genEngL5}
 };
 function buildQuizSet(genFn, n){
-  let qs=[], seen=new Set(), attempts=0;
-  while(qs.length<n && attempts<400){
+  const poolTarget=Math.max(n*4,60);
+  let pool=[], seen=new Set(), attempts=0;
+  while(pool.length<poolTarget && attempts<poolTarget*20){
     attempts++;
     const cand=genFn();
     const key=cand.q+'|'+cand.opts.join(',');
     if(seen.has(key)) continue;
-    seen.add(key); qs.push(cand);
+    seen.add(key); pool.push(cand);
   }
-  return qs;
+  const byTopic={};
+  pool.forEach(q=>{ const t=q.topic||'_none'; (byTopic[t]=byTopic[t]||[]).push(q); });
+  const topics=shuffle(Object.keys(byTopic));
+  const result=[];
+  let progressed=true;
+  while(result.length<n && progressed){
+    progressed=false;
+    for(const t of topics){
+      if(result.length>=n) break;
+      const bucket=byTopic[t];
+      if(bucket && bucket.length){ result.push(bucket.shift()); progressed=true; }
+    }
+  }
+  while(result.length<n && attempts<poolTarget*20+300){
+    attempts++;
+    result.push(genFn());
+  }
+  return shuffle(result);
 }
 function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); }
 function goHome(){ currentKid=null; document.getElementById('playerName').textContent='בחר/י שחקן'; document.getElementById('playerAv').textContent='🙂'; updateStarsChip(); showScreen('screen-select'); }
@@ -1003,7 +1030,7 @@ function startQuiz(subject){
   currentSubject=subject; const level=KIDS[currentKid].level;
   if(subject==='eng' && (level==='L2'||level==='L3')){ showEnglishLearn(); return; }
   const genFn=GEN_MAP[subject][level];
-  currentQuestions=buildQuizSet(genFn,10); currentIndex=0; currentScore=0; sessionStartTime=Date.now();
+  currentQuestions=buildQuizSet(genFn,20); currentIndex=0; currentScore=0; sessionStartTime=Date.now();
   showScreen('screen-quiz'); renderQuestion();
 }
 function renderQuestion(){
@@ -1157,7 +1184,7 @@ function deckPrev(){ const items=DECKS[deckCategory]; deckIndex=(deckIndex-1+ite
 function deckNext(){ const items=DECKS[deckCategory]; deckIndex=(deckIndex+1)%items.length; renderDeck(); }
 function startEngPractice(){
   currentSubject='eng';
-  currentQuestions=buildQuizSet(genEngPractice,10); currentIndex=0; currentScore=0; sessionStartTime=Date.now();
+  currentQuestions=buildQuizSet(genEngPractice,20); currentIndex=0; currentScore=0; sessionStartTime=Date.now();
   showScreen('screen-quiz'); renderQuestion();
 }
 
