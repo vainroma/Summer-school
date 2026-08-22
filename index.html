@@ -242,6 +242,12 @@
     <button class="tab-btn" data-cat="numbers" onclick="switchDeckTab('numbers')">מספרים</button>
     <button class="tab-btn" data-cat="animals" onclick="switchDeckTab('animals')">חיות</button>
     <button class="tab-btn" data-cat="family" onclick="switchDeckTab('family')">משפחה</button>
+    <button class="tab-btn" data-cat="food" onclick="switchDeckTab('food')">אוכל</button>
+    <button class="tab-btn" data-cat="body" onclick="switchDeckTab('body')">הגוף שלי</button>
+    <button class="tab-btn" data-cat="clothes" onclick="switchDeckTab('clothes')">בגדים</button>
+    <button class="tab-btn" data-cat="weather" onclick="switchDeckTab('weather')">מזג אוויר</button>
+    <button class="tab-btn" data-cat="school" onclick="switchDeckTab('school')">בית ספר</button>
+    <button class="tab-btn" data-cat="actions" onclick="switchDeckTab('actions')">פעולות</button>
   </div>
   <div class="flashcard">
     <div class="flash-emoji" id="flashEmoji">🍎</div>
@@ -372,7 +378,9 @@ const CONCEPT_CARDS = {
     plural:{title:'רבים באנגלית',text:'ברוב המקרים מוסיפים S בסוף המילה כדי ליצור רבים, אבל יש גם מילים חריגות.',example:'לדוגמה: cat -> cats, אבל child -> children.'},
     opposites:{title:'הפכים באנגלית',text:'מילים הפוכות הן מילים עם משמעות מנוגדת.',example:'לדוגמה: ההפך מ-"big" הוא "small".'},
     dosdoes:{title:'Do / Does',text:'משתמשים ב-"does" עם He/She/It, וב-"do" עם I/You/We/They.',example:'לדוגמה: "She does her homework", "They do their homework".'},
-    pasttense:{title:'זמן עבר באנגלית',text:'כדי לתאר משהו שכבר קרה, הופכים את הפועל לצורת עבר. חלק מהפעלים משתנים בצורה מיוחדת.',example:'לדוגמה: go -> went, eat -> ate.'}
+    pasttense:{title:'זמן עבר באנגלית',text:'כדי לתאר משהו שכבר קרה, הופכים את הפועל לצורת עבר. חלק מהפעלים משתנים בצורה מיוחדת.',example:'לדוגמה: go -> went, eat -> ate.'},
+    phonics:{title:'אותיות וצלילים 🔤',text:'לכל אות באנגלית יש שם וצליל. לומדים לזהות באיזו אות מילה מתחילה, ומתרגלים את הסדר של האותיות באלף-בית (A,B,C...Z).',example:'לדוגמה: המילה "Sun" מתחילה באות S. אחרי האות B באה האות C.'},
+    spelling:{title:'איות באנגלית ✏️',text:'איות (spelling) זה לכתוב מילה עם האותיות הנכונות בסדר הנכון. עוזר לקרוא את המילה בקול, אות אחרי אות, ולבדוק שהיא נשמעת נכון.',example:'לדוגמה: המילה CAT מאויתת C-A-T. אם נחליף אותיות (כמו CTA) זה כבר לא נכון.'}
   }
 };
 
@@ -668,8 +676,24 @@ const READING_L2=[
   {s:'לדני יש חתול לבן ושמו פלאפי.',q:'איך קוראים לחתול של דני?',correct:'פלאפי',distractors:['מיצי','שלגי','כדורי']},
   {s:'אנאל אכלה גלידת שוקולד ביום חם.',q:'איזה טעם גלידה אכלה אנאל?',correct:'שוקולד',distractors:['וניל','תות','לימון']}
 ];
+const TENSE_L2=[
+  {s:'הילד רץ בגן',ans:'הווה'},
+  {s:'אתמול אכלתי גלידה',ans:'עבר'},
+  {s:'אני שותה מים',ans:'הווה'},
+  {s:'אתמול שיחקתי בכדור',ans:'עבר'},
+  {s:'הכלב ישן על השטיח',ans:'הווה'},
+  {s:'אתמול ראיתי סרט מצוייר',ans:'עבר'},
+  {s:'אמא מבשלת ארוחת ערב',ans:'הווה'},
+  {s:'אתמול הלכנו לגן החיות',ans:'עבר'},
+  {s:'הציפור שרה בעץ',ans:'הווה'},
+  {s:'אתמול קניתי ספר חדש',ans:'עבר'}
+];
 function genHebL2(){
-  const type=pick(['plural','plural','plural-hard','gender','gender','category','verb-in-sentence','verb-in-sentence','reading','reading','verb-or-noun','singular-or-plural','antonym-simple','first-letter']);
+  const type=pick(['plural','plural','plural-hard','gender','gender','category','verb-in-sentence','verb-in-sentence','reading','reading','verb-or-noun','singular-or-plural','antonym-simple','tense-simple']);
+  if(type==='tense-simple'){
+    const item=pick(TENSE_L2), opts=['הווה','עבר'];
+    return {emoji:'⏰', q:`"${item.s}" - זה קורה עכשיו (הווה) או שזה כבר קרה (עבר)?`, opts, c:opts.indexOf(item.ans), topic:'tense'};
+  }
   if(type==='plural-hard'){
     const pair=pick(PLURAL_L3), correct=pair[1];
     const distractors=shuffle(PLURAL_L3.map(p=>p[1]).filter(p=>p!==correct)).slice(0,3);
@@ -707,14 +731,6 @@ function genHebL2(){
     const distractors=shuffle(WORDS_L2.map(p=>p[1]).filter(p=>p!==correct)).slice(0,3);
     const opts=shuffle([correct,...distractors]);
     return {emoji:'📖', q:`מה רבים של המילה "${pair[0]}"?`, opts, c:opts.indexOf(correct), topic:'plural'};
-  }
-  if(type==='first-letter' || type==='last-letter'){
-    const word=pick(WORDS_L2)[0];
-    const correct = type==='first-letter'? word[0] : word[word.length-1];
-    const distractors=shuffle(ALEPH_BET.filter(l=>l!==correct)).slice(0,3);
-    const opts=shuffle([correct,...distractors]);
-    const label=type==='first-letter'?'מתחילה':'מסתיימת';
-    return {emoji:'🔤', q:`באיזו אות ${label} המילה "${word}"?`, opts, c:opts.indexOf(correct), topic:'letters'};
   }
   const catNames=Object.keys(CATEGORY_L2), catKey=pick(catNames), correct=pick(CATEGORY_L2[catKey]);
   const otherCats=catNames.filter(k=>k!==catKey);
@@ -855,19 +871,76 @@ const VOCAB={
     {en:'Horse',he:'סוס',e:'🐴'},{en:'Cow',he:'פרה',e:'🐮'},{en:'Rabbit',he:'ארנב',e:'🐰'},{en:'Bear',he:'דוב',e:'🐻'},
     {en:'Lion',he:'אריה',e:'🦁'},{en:'Elephant',he:'פיל',e:'🐘'}],
   family:[{en:'Mother',he:'אמא',e:'👩'},{en:'Father',he:'אבא',e:'👨'},{en:'Sister',he:'אחות',e:'👧'},
-    {en:'Brother',he:'אח',e:'👦'},{en:'Grandmother',he:'סבתא',e:'👵'},{en:'Grandfather',he:'סבא',e:'👴'}]
+    {en:'Brother',he:'אח',e:'👦'},{en:'Grandmother',he:'סבתא',e:'👵'},{en:'Grandfather',he:'סבא',e:'👴'}],
+  food:[{en:'Bread',he:'לחם',e:'🍞'},{en:'Milk',he:'חלב',e:'🥛'},{en:'Cheese',he:'גבינה',e:'🧀'},{en:'Egg',he:'ביצה',e:'🥚'},
+    {en:'Cookie',he:'עוגייה',e:'🍪'},{en:'Banana',he:'בננה',e:'🍌'},{en:'Apple',he:'תפוח',e:'🍎'},{en:'Water',he:'מים',e:'💧'}],
+  body:[{en:'Eye',he:'עין',e:'👁️'},{en:'Ear',he:'אוזן',e:'👂'},{en:'Nose',he:'אף',e:'👃'},{en:'Mouth',he:'פה',e:'👄'},
+    {en:'Hand',he:'יד',e:'✋'},{en:'Leg',he:'רגל',e:'🦵'}],
+  clothes:[{en:'Shirt',he:'חולצה',e:'👕'},{en:'Pants',he:'מכנסיים',e:'👖'},{en:'Shoes',he:'נעליים',e:'👟'},
+    {en:'Socks',he:'גרביים',e:'🧦'},{en:'Dress',he:'שמלה',e:'👗'},{en:'Hat',he:'כובע',e:'🧢'}],
+  weather:[{en:'Sun',he:'שמש',e:'☀️'},{en:'Rain',he:'גשם',e:'🌧️'},{en:'Cloud',he:'ענן',e:'☁️'},
+    {en:'Snow',he:'שלג',e:'❄️'},{en:'Wind',he:'רוח',e:'💨'},{en:'Hot',he:'חם',e:'🔥'}],
+  school:[{en:'Book',he:'ספר',e:'📚'},{en:'Pencil',he:'עיפרון',e:'✏️'},{en:'Bag',he:'תיק',e:'🎒'},
+    {en:'Chair',he:'כיסא',e:'🪑'},{en:'Scissors',he:'מספריים',e:'✂️'},{en:'Crayon',he:'צבע',e:'🖍️'}],
+  actions:[{en:'Run',he:'לרוץ',e:'🏃'},{en:'Jump',he:'לקפוץ',e:'🤸'},{en:'Swim',he:'לשחות',e:'🏊'},
+    {en:'Sleep',he:'לישון',e:'😴'},{en:'Eat',he:'לאכול',e:'🍽️'},{en:'Sing',he:'לשיר',e:'🎤'},{en:'Dance',he:'לרקוד',e:'💃'}]
 };
-function genEngPractice(){
-  const allItems=[...VOCAB.colors,...VOCAB.numbers,...VOCAB.animals,...VOCAB.family];
-  const item=pick(allItems), toHebrew=Math.random()<0.5;
-  if(toHebrew){
-    const correct=item.he, distractors=shuffle(allItems.map(x=>x.he).filter(h=>h!==correct)).slice(0,3);
+const VOCAB_CATEGORY_LABELS={colors:'צבעים',numbers:'מספרים',animals:'חיות',family:'משפחה',food:'אוכל',body:'הגוף שלי',clothes:'בגדים',weather:'מזג אוויר',school:'בית ספר',actions:'פעולות'};
+function typoSwap(w){ if(w.length<3) return w+w[0]; const i=randInt(0,w.length-2); return w.slice(0,i)+w[i+1]+w[i]+w.slice(i+2); }
+function typoDouble(w){ const i=randInt(0,w.length-1); return w.slice(0,i)+w[i]+w.slice(i); }
+function typoDrop(w){ if(w.length<3) return w+'x'; const i=randInt(1,w.length-1); return w.slice(0,i)+w.slice(i+1); }
+function genLetterSoundQ(){
+  const type=pick(['word-to-letter','word-to-letter','letter-to-word','next-letter']);
+  if(type==='word-to-letter'){
+    const entry=pick(ALPHABET), wordObj=pick(entry.words), correct=entry.l;
+    const distractors=shuffle(ALPHABET.map(a=>a.l).filter(l=>l!==correct)).slice(0,3);
     const opts=shuffle([correct,...distractors]);
-    return {emoji:item.e, q:`מה המשמעות של המילה "${item.en}"?`, opts, c:opts.indexOf(correct), optsEn:false, hint:item};
+    return {emoji:wordObj.e, q:`באיזו אות מתחילה המילה "${wordObj.w}"?`, opts, c:opts.indexOf(correct), optsEn:true, topic:'phonics', speakText:wordObj.w};
   }
-  const correct=item.en, distractors=shuffle(allItems.map(x=>x.en).filter(e=>e!==correct)).slice(0,3);
+  if(type==='letter-to-word'){
+    const entry=pick(ALPHABET), correct=pick(entry.words).w;
+    const otherEntries=ALPHABET.filter(a=>a.l!==entry.l);
+    const distractors=shuffle(otherEntries.map(a=>pick(a.words).w)).slice(0,3);
+    const opts=shuffle([correct,...distractors]);
+    return {q:`איזו מהמילים הבאות מתחילה באות "${entry.l}"?`, opts, c:opts.indexOf(correct), optsEn:true, topic:'phonics', speakText:entry.l};
+  }
+  const idx=randInt(0,ALPHABET.length-2), correct=ALPHABET[idx+1].l, current=ALPHABET[idx].l;
+  const distractors=shuffle(ALPHABET.map(a=>a.l).filter(l=>l!==correct&&l!==current)).slice(0,3);
   const opts=shuffle([correct,...distractors]);
-  return {emoji:item.e, q:`איך אומרים "${item.he}" באנגלית?`, opts, c:opts.indexOf(correct), optsEn:true, hint:item};
+  return {q:`איזו אות באה אחרי "${current}" באלף-בית האנגלי?`, opts, c:opts.indexOf(correct), optsEn:true, topic:'phonics', speakText:current};
+}
+function genEngPractice(){
+  const allItems=[...VOCAB.colors,...VOCAB.numbers,...VOCAB.animals,...VOCAB.family,...VOCAB.food,...VOCAB.body,...VOCAB.clothes,...VOCAB.weather,...VOCAB.school,...VOCAB.actions];
+  const simpleItems=allItems.filter(x=>!x.en.includes(' ') && x.en.length>=3 && x.en.length<=7);
+  const type=pick(['meaning','meaning','meaning','spelling','missing-letter','phonics','phonics']);
+  if(type==='meaning'){
+    const item=pick(allItems), toHebrew=Math.random()<0.5;
+    if(toHebrew){
+      const correct=item.he, distractors=shuffle(allItems.map(x=>x.he).filter(h=>h!==correct)).slice(0,3);
+      const opts=shuffle([correct,...distractors]);
+      return {q:`מה המשמעות של המילה "${item.en}"?`, opts, c:opts.indexOf(correct), optsEn:false, hint:item, topic:'vocab'};
+    }
+    const correct=item.en, distractors=shuffle(allItems.map(x=>x.en).filter(e=>e!==correct)).slice(0,3);
+    const opts=shuffle([correct,...distractors]);
+    return {q:`איך אומרים "${item.he}" באנגלית?`, opts, c:opts.indexOf(correct), optsEn:true, hint:item, topic:'vocab'};
+  }
+  if(type==='spelling'){
+    const item=pick(simpleItems.length?simpleItems:allItems), word=item.en;
+    let wrongs=[...new Set([typoSwap(word),typoDouble(word),typoDrop(word)])].filter(w=>w.toLowerCase()!==word.toLowerCase());
+    while(wrongs.length<3) wrongs.push(word+pick(['a','b','x']));
+    const opts=shuffle([word,...wrongs.slice(0,3)]);
+    return {emoji:item.e, q:`איך מאייתים נכון את המילה "${item.he}" באנגלית?`, opts, c:opts.indexOf(word), optsEn:true, topic:'spelling', speakText:word};
+  }
+  if(type==='missing-letter'){
+    const item=pick(simpleItems.length?simpleItems:allItems), word=item.en.toUpperCase();
+    const idx=randInt(0,word.length-1), correct=word[idx];
+    const masked=word.slice(0,idx)+'_'+word.slice(idx+1);
+    const letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    const distractors=shuffle(letters.filter(l=>l!==correct)).slice(0,3);
+    const opts=shuffle([correct,...distractors]);
+    return {emoji:item.e, q:`איזו אות חסרה במילה: ${masked}  (${item.he})?`, opts, c:opts.indexOf(correct), optsEn:true, topic:'phonics', speakText:item.en};
+  }
+  return genLetterSoundQ();
 }
 
 /* ===================== ENGLISH: quiz mode (ליאן, L5) ===================== */
@@ -931,6 +1004,23 @@ function pairEngQuestion(list, promptTemplate, topic, emoji){
 let currentKid=null, currentSubject=null, currentQuestions=[], currentIndex=0, currentScore=0, sessionStartTime=null;
 let progressByKid={}, history=[], reports=[], starsByKid={}, timeByKid={};
 const STORAGE_KEY='summerTrail_v1';
+
+/* ===== Google Sheets sync (optional) =====
+   Paste your Apps Script Web App URL below (see setup instructions) to enable
+   automatic syncing of every round's results to a shared Google Sheet.
+   Leave as '' to disable - the game works fully without it. */
+const SHEETS_WEBHOOK_URL = '';
+function sendToSheet(record){
+  if(!SHEETS_WEBHOOK_URL) return;
+  try{
+    fetch(SHEETS_WEBHOOK_URL, {
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify(record)
+    }).catch(()=>{});
+  }catch(e){}
+}
 function saveState(){
   try{ localStorage.setItem(STORAGE_KEY, JSON.stringify({progressByKid,history,reports,starsByKid,timeByKid})); }catch(e){}
 }
@@ -1036,7 +1126,9 @@ function startQuiz(subject){
 function renderQuestion(){
   const q=currentQuestions[currentIndex];
   const qEmojiEl=document.getElementById('qEmoji');
-  if(q.iconSvg){ qEmojiEl.innerHTML=q.iconSvg; } else { qEmojiEl.textContent=q.emoji; }
+  if(q.iconSvg){ qEmojiEl.innerHTML=q.iconSvg; qEmojiEl.style.display=''; }
+  else if(q.emoji){ qEmojiEl.textContent=q.emoji; qEmojiEl.style.display=''; }
+  else { qEmojiEl.textContent=''; qEmojiEl.style.display='none'; }
   const qTextEl=document.getElementById('qText');
   qTextEl.textContent=q.q; qTextEl.classList.toggle('ltr-q', !!q.ltr);
   document.getElementById('quizCount').textContent=(currentIndex+1)+'/'+currentQuestions.length;
@@ -1057,9 +1149,10 @@ function renderQuestion(){
   document.getElementById('reportBtn').disabled=false;
   document.getElementById('reportBtn').textContent='🚩 מצאתי טעות';
   const speakBtn=document.getElementById('speakBtn');
-  if(currentSubject==='eng' && q.hint){
+  if(currentSubject==='eng' && (q.hint || q.speakText)){
     speakBtn.classList.remove('hidden');
-    if(q.optsEn===false){ speak(q.hint.en); }
+    if(q.hint && q.optsEn===false){ speak(q.hint.en); }
+    else if(q.speakText){ speak(q.speakText); }
   } else {
     speakBtn.classList.add('hidden');
   }
@@ -1067,6 +1160,7 @@ function renderQuestion(){
 function replayQuizAudio(){
   const q=currentQuestions[currentIndex];
   if(q && q.hint) speak(q.hint.en);
+  else if(q && q.speakText) speak(q.speakText);
 }
 function selectAnswer(picked,correct,btnEl){
   const allBtns=document.querySelectorAll('#optionsWrap .opt'); allBtns.forEach(b=>b.disabled=true);
@@ -1080,8 +1174,10 @@ function selectAnswer(picked,correct,btnEl){
   }
   document.getElementById('nextBtn').classList.remove('hidden');
   document.getElementById('notSureBtn').classList.add('hidden');
-  if(currentSubject==='eng' && currentQuestions[currentIndex].hint){
-    speak(currentQuestions[currentIndex].hint.en);
+  if(currentSubject==='eng'){
+    const q=currentQuestions[currentIndex];
+    if(q.hint){ speak(q.hint.en); }
+    else { speak(q.opts[correct]); }
   }
 }
 function nextQuestion(){ currentIndex++; if(currentIndex>=currentQuestions.length) finishQuiz(); else renderQuestion(); }
@@ -1093,9 +1189,11 @@ function finishQuiz(){
   progressByKid[currentKid][currentSubject]=Math.max(prev,frac);
   const seconds = sessionStartTime ? Math.round((Date.now()-sessionStartTime)/1000) : 0;
   timeByKid[currentKid]=(timeByKid[currentKid]||0)+seconds;
-  history.push({kid:currentKid, subject:currentSubject, score:currentScore, total:currentQuestions.length, date:new Date().toISOString(), seconds});
+  const record={kid:currentKid, kidName:KIDS[currentKid].name, subject:currentSubject, subjectName:SUBJECT_NAMES[currentSubject], score:currentScore, total:currentQuestions.length, date:new Date().toISOString(), seconds};
+  history.push(record);
   if(history.length>300) history=history.slice(-300);
   saveState();
+  sendToSheet(record);
   document.getElementById('resultScore').textContent=currentScore+'/'+currentQuestions.length;
   let emoji,msg,starCount;
   if(frac===1){emoji='🏆';msg='מושלם! ידע מדהים!';starCount=3;}
@@ -1153,7 +1251,7 @@ function reportMistake(){
 
 /* ===== English learn deck (Adam & Anael) ===== */
 let deckCategory='alphabet', deckIndex=0, currentDeckWord=null;
-const DECKS={alphabet:ALPHABET, colors:VOCAB.colors, numbers:VOCAB.numbers, animals:VOCAB.animals, family:VOCAB.family};
+const DECKS={alphabet:ALPHABET, colors:VOCAB.colors, numbers:VOCAB.numbers, animals:VOCAB.animals, family:VOCAB.family, food:VOCAB.food, body:VOCAB.body, clothes:VOCAB.clothes, weather:VOCAB.weather, school:VOCAB.school, actions:VOCAB.actions};
 function showEnglishLearn(){ deckCategory='alphabet'; deckIndex=0; renderDeck(); showScreen('screen-eng-learn'); }
 function switchDeckTab(cat){ deckCategory=cat; deckIndex=0; renderDeck(); }
 function renderDeck(){
