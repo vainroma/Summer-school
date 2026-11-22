@@ -116,6 +116,12 @@
   .speak-btn{background:var(--sky);color:white;border:none;border-radius:999px;padding:10px 22px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Heebo',sans-serif;box-shadow:0 3px 0 #3a94bf;margin-top:16px;}
   .speak-btn:active{transform:translateY(2px);box-shadow:0 1px 0 #3a94bf;}
   .speak-btn.small{padding:8px 16px;font-size:13px;margin:14px auto 0;display:block;}
+  .topics-list{display:flex;flex-direction:column;gap:12px;}
+  .topic-btn{display:flex;align-items:center;justify-content:space-between;background:var(--white);border:3px solid transparent;border-radius:18px;padding:16px 18px;font-size:17px;font-weight:700;cursor:pointer;font-family:'Heebo',sans-serif;color:var(--navy);box-shadow:0 5px 0 rgba(31,59,77,0.08);text-align:right;}
+  .topic-btn:hover{border-color:var(--sky);}
+  .topic-btn.mixed{background:var(--sun);justify-content:center;}
+  .topic-acc{font-size:13px;font-weight:900;padding:4px 10px;border-radius:999px;background:var(--sand-deep);}
+  .topic-acc.low{background:#FFE4E1;color:#c2493e;} .topic-acc.high{background:#DFF6E7;color:#2f8f57;}
   .dash-card{background:var(--white);border-radius:22px;padding:20px;box-shadow:0 6px 0 rgba(31,59,77,0.08);margin-bottom:18px;}
   .dash-card h3{margin:0 0 10px;font-size:18px;}
   .dash-tags{display:flex;gap:8px;flex-wrap:wrap;}
@@ -166,19 +172,19 @@
       <button class="back-btn" onclick="goHome()">↩ שחקן אחר</button>
     </div>
     <div class="stations">
-      <div class="station" onclick="startQuiz('math')">
+      <div class="station" onclick="openSubject('math')">
         <div class="icon-badge">🔢</div><h3>מתמטיקה</h3><p id="desc-math">חיבור, חיסור וכיף עם מספרים</p>
         <div class="prog"><div class="prog-fill" id="prog-math"></div></div><div class="prog-label" id="proglabel-math">עוד לא שיחקת</div>
       </div>
-      <div class="station" onclick="startQuiz('geo')">
+      <div class="station" onclick="openSubject('geo')">
         <div class="icon-badge">📐</div><h3>גאומטריה</h3><p id="desc-geo">צורות, שטח והיקף</p>
         <div class="prog"><div class="prog-fill" id="prog-geo"></div></div><div class="prog-label" id="proglabel-geo">עוד לא שיחקת</div>
       </div>
-      <div class="station" onclick="startQuiz('heb')">
+      <div class="station" onclick="openSubject('heb')">
         <div class="icon-badge">📖</div><h3>שפה</h3><p id="desc-heb">עברית, דקדוק והבנת הנקרא</p>
         <div class="prog"><div class="prog-fill" id="prog-heb"></div></div><div class="prog-label" id="proglabel-heb">עוד לא שיחקת</div>
       </div>
-      <div class="station" onclick="startQuiz('eng')">
+      <div class="station" onclick="openSubject('eng')">
         <div class="icon-badge">🔤</div><h3>אנגלית</h3><p id="desc-eng">מילים ומשפטים באנגלית</p>
         <div class="prog"><div class="prog-fill" id="prog-eng"></div></div><div class="prog-label" id="proglabel-eng">עוד לא שיחקת</div>
       </div>
@@ -260,7 +266,7 @@
       <button class="deck-arrow" onclick="deckPrev()">←</button>
     </div>
   </div>
-  <button class="next-btn practice-cta" onclick="startEngPractice()">עברתי על הקלפים, בואו נתרגל! ✅</button>
+  <button class="next-btn practice-cta" onclick="openTopicMenu('eng')">עברתי על הקלפים, בואו נתרגל! ✅</button>
 </div>
 
 <!-- SCREEN: parent dashboard -->
@@ -270,10 +276,19 @@
     <button class="back-btn" onclick="goHome()">↩ חזרה</button>
   </div>
   <div class="dash-card" style="background:var(--sand-deep);box-shadow:none;">
-    <p style="margin:0;font-size:13px;line-height:1.6;">📱 <b>חשוב לדעת:</b> הנתונים כאן נשמרים במכשיר הספציפי הזה בלבד. אם ילד/ה משחק/ת ממכשיר אחר, לחצי על <b>"📤 שלח דוח"</b> ליד השם שלו/ה - זה יפתח הודעת WhatsApp מוכנה עם כל הפרטים, כדי לשלוח אליך.</p>
+    <p style="margin:0;font-size:13px;line-height:1.6;">📱 <b>חשוב לדעת:</b> הנתונים כאן נשמרים במכשיר הספציפי הזה. כדי לראות את כל הילדים מהטלפון שלך - מחברים Google Sheets (ראו הוראות). בנוסף, אפשר ללחוץ על <b>"📤 שלח דוח"</b> ליד השם שלו/ה - זה יפתח הודעת WhatsApp מוכנה עם כל הפרטים, כדי לשלוח אליך.</p>
   </div>
   <div id="dashboardContent"></div>
   <button class="ghost-btn" style="display:block;margin:24px auto 0;" onclick="clearAllData()">איפוס כל הנתונים</button>
+</div>
+
+<!-- SCREEN: topic menu -->
+<div class="screen hidden" id="screen-topics">
+  <div class="trail-header">
+    <div><h2 class="trail-title" id="topicsTitle">מה נתרגל?</h2><p class="trail-sub">אפשר לבחור נושא ספציפי להכנה למבחן, או לשחק מעורב</p></div>
+    <button class="back-btn" onclick="showHub()">↩ חזרה לשביל</button>
+  </div>
+  <div id="topicsList" class="topics-list"></div>
 </div>
 
 <!-- SCREEN: result -->
@@ -285,6 +300,7 @@
     <div class="result-msg" id="resultMsg">כל הכבוד!</div>
     <div class="result-btns">
       <button class="next-btn" onclick="retryQuiz()">לנסות שוב</button>
+      <button class="ghost-btn" onclick="openTopicMenu(currentSubject)">נושא אחר</button>
       <button class="ghost-btn" onclick="showHub()">חזרה לשביל</button>
     </div>
     <button class="speak-btn small" style="background:var(--grass);box-shadow:0 3px 0 #3d8a5c;" onclick="shareKidReport(currentKid)">📤 שלח דוח להורים</button>
@@ -353,7 +369,7 @@ const CONCEPT_CARDS = {
     symmetry:{title:'סימטריה ⚖️',text:'צורה סימטרית אפשר לחלק לשני חלקים זהים לגמרי, כמו במראה.',example:'לדוגמה: פרפר או ריבוע הם סימטריים.'},
     'shapes-props':{title:'תכונות צורות 🔶',text:'לכל צורה יש תכונות מיוחדות: אורך הצלעות, אם הן שוות, וכמה קודקודים יש לה.',example:'לדוגמה: בריבוע כל הצלעות שוות. במלבן יש 2 זוגות צלעות שוות.'},
     area:{title:'שטח 📐',text:'השטח הוא כמה מקום יש בתוך הצורה. בכל צורה יש נוסחה משלה: במלבן ובריבוע - אורך כפול רוחב (או צלע כפול צלע). אבל במשולש חשוב לזכור: קודם מכפילים בסיס כפול גובה, ואז חייבים לחלק ב-2! זה כי המשולש הוא בעצם חצי ממלבן.',example:'לדוגמה: מלבן עם אורך 5 ורוחב 3 - השטח הוא 5×3=15. אבל משולש עם בסיס 5 וגובה 4 - השטח הוא (5×4)÷2=10, ולא 20!'},
-    angles:{title:'זוויות 📐',text:'זווית נוצרת בין שני קווים שנפגשים. זווית ישרה שווה ל-90 מעלות.',example:'לדוגמה: סכום כל הזוויות במשולש הוא תמיד 180 מעלות.'},
+    angles:{title:'זוויות 📐',text:'זווית נוצרת בין שני קווים שנפגשים. זווית ישרה שווה ל-90 מעלות. זווית חדה קטנה מ-90, וזווית קהה גדולה מ-90 (אבל קטנה מ-180).',example:'לדוגמה: סכום כל הזוויות במשולש הוא תמיד 180 מעלות.'},
     circle:{title:'מעגל ⭕',text:'הרדיוס הוא הקו ממרכז המעגל לשפה שלו. הקוטר עובר דרך המרכז ומחבר שתי נקודות בהיקף - הוא כפול מהרדיוס.',example:'לדוגמה: אם הרדיוס הוא 5, הקוטר הוא 10.'},
     solids:{title:'גופים תלת-ממדיים 📦',text:'גוף תלת-ממדי הוא צורה עם עומק, כמו קובייה או כדור.',example:'לדוגמה: לקובייה יש 6 פאות, 8 קודקודים ו-12 צלעות.'}
   },
@@ -451,7 +467,7 @@ function genMathL3(){
   return {emoji:'🍬', q:`יש ${bags} שקיות עם ${each} סוכריות בכל אחת. כמה סה"כ?`, ...mcq, ltr:false, topic:'wordproblems', worked:`דוגמה אחרת: 3 שקיות עם 8 סוכריות בכל אחת = 3 × 8 = 24.`};
 }
 function genMathL5(){
-  const type = pick(['multiplication','multiplication','division','division','fractions','fractions','addition','percentages','wordproblems','wordproblems','timestable','timestable-div']);
+  const type = pick(['multiplication','multiplication','division','division','fractions','fractions','addition','subtraction','percentages','wordproblems','wordproblems','timestable','timestable-div']);
   if(type==='timestable'){
     const a=randInt(1,10), b=randInt(1,10), correct=a*b;
     const mcq=buildMCQ(correct,[correct+a,correct-a,correct+b,correct-b]);
@@ -482,6 +498,11 @@ function genMathL5(){
     const a=randInt(120,720), b=randInt(120,480), correct=a+b;
     const mcq=buildMCQ(correct,[correct+10,correct-10,correct+1,correct-1]);
     return {emoji:'🔢', q:`${a} + ${b} = ?`, ...mcq, ltr:true, topic:'addition', worked:`דוגמה אחרת: 245 + 318 = 563.`};
+  }
+  if(type==='subtraction'){
+    const a=randInt(300,980), b=randInt(110,a-60), correct=a-b;
+    const mcq=buildMCQ(correct,[correct+10,correct-10,correct+100,correct-100,correct+1]);
+    return {emoji:'🔢', q:`${a} - ${b} = ?`, ...mcq, ltr:true, topic:'subtraction', worked:`דוגמה אחרת: 612 - 245 = 367. מחסרים בשלבים: 612-200=412, אחר כך 412-45=367.`};
   }
   if(type==='percentages'){
     const PERCENT_BASES={10:[20,30,40,50,60,70,80,90,100,120],50:[10,20,30,40,50,60,80,100],20:[10,15,20,25,30,40,50]};
@@ -548,49 +569,60 @@ function shapeSvg(shape){
 function genGeoL2(){
   const type = pick(['sides','corners','name-by-sides','round','count-total','compare-sides','mini-perimeter']);
   if(type==='mini-perimeter'){
-    const side=randInt(2,7), correct=side*4;
+    const side=randInt(2,12), correct=side*4;
     const mcq=buildMCQ(correct,[side*2,side*3,correct+2,correct-2]);
-    return {iconSvg:squareSvgLabeled(side,'#FFC93C'), q:`מה ההיקף של ריבוע עם צלע ${side}? (רמז: מחברים את 4 הצלעות)`, ...mcq, topic:'shapes-basic', worked:`דוגמה אחרת: ריבוע עם צלע 3: היקף = 3+3+3+3 = 12.`};
+    return {iconSvg:squareSvgLabeled(side,'#FFC93C'), q:`מה ההיקף של ריבוע עם צלע ${side}? (רמז: מחברים את 4 הצלעות)`, ...mcq, topic:'shapes-basic', sub:'perimeter', worked:`דוגמה אחרת: ריבוע עם צלע 3: היקף = 3+3+3+3 = 12.`};
   }
   if(type==='compare-sides'){
     const withSides=SHAPES.filter(s=>s.sides>0);
     const s1=pick(withSides), s2=pick(withSides.filter(s=>s.sides!==s1.sides));
     const correct = s1.sides>s2.sides ? s1.name : s2.name;
     const opts=shuffle([s1.name,s2.name]);
-    return {emoji:'📐', q:`לאיזו צורה יש יותר צלעות: ${s1.name} או ${s2.name}?`, opts, c:opts.indexOf(correct), topic:'shapes-basic'};
+    return {emoji:'📐', q:`לאיזו צורה יש יותר צלעות: ${s1.name} או ${s2.name}?`, opts, c:opts.indexOf(correct), topic:'shapes-basic', sub:'sides'};
   }
   if(type==='count-total'){
     const shape=pick(SHAPES.filter(s=>s.sides>0)), count=randInt(2,7), correct=shape.sides*count;
     const mcq=buildMCQ(correct,[correct+shape.sides,correct-shape.sides,count,shape.sides]);
-    return {iconSvg:shapeSvg(shape), q:`אם יש ${count} צורות של ${shape.name}, כמה צלעות יש בסך הכל?`, ...mcq, topic:'shapes-basic'};
+    return {iconSvg:shapeSvg(shape), q:`אם יש ${count} צורות של ${shape.name}, כמה צלעות יש בסך הכל?`, ...mcq, topic:'shapes-basic', sub:'sides'};
   }
   if(type==='sides'){
     const shape=pick(SHAPES);
     const mcq=buildMCQ(shape.sides,[0,3,4,5,6]);
-    return {iconSvg:shapeSvg(shape), q:`כמה צלעות יש ל${shape.name}?`, ...mcq, topic:'shapes-basic'};
+    return {iconSvg:shapeSvg(shape), q:`כמה צלעות יש ל${shape.name}?`, ...mcq, topic:'shapes-basic', sub:'sides'};
   }
   if(type==='corners'){
     const shape=pick(SHAPES);
     const mcq=buildMCQ(shape.corners,[0,3,4,5,6]);
-    return {iconSvg:shapeSvg(shape), q:`כמה קודקודים (פינות) יש ל${shape.name}?`, ...mcq, topic:'shapes-basic'};
+    return {iconSvg:shapeSvg(shape), q:`כמה קודקודים (פינות) יש ל${shape.name}?`, ...mcq, topic:'shapes-basic', sub:'corners'};
   }
   if(type==='name-by-sides'){
     const withSides=SHAPES.filter(s=>s.sides>0), shape=pick(withSides);
     const distractors=shuffle(SHAPES.map(s=>s.name).filter(n=>n!==shape.name)).slice(0,3);
     const opts=shuffle([shape.name,...distractors]);
-    return {iconSvg:shapeSvg(shape), q:`לצורה עם ${shape.sides} צלעות קוראים...`, opts, c:opts.indexOf(shape.name), topic:'shapes-basic'};
+    return {iconSvg:shapeSvg(shape), q:`לצורה עם ${shape.sides} צלעות קוראים...`, opts, c:opts.indexOf(shape.name), topic:'shapes-basic', sub:'sides'};
   }
   const shape=pick(SHAPES), correct=shape.corners>0?'כן':'לא';
-  return {iconSvg:shapeSvg(shape), q:`האם ל${shape.name} יש פינות (קודקודים)?`, opts:['כן','לא'], c:correct==='כן'?0:1, topic:'shapes-basic'};
+  return {iconSvg:shapeSvg(shape), q:`האם ל${shape.name} יש פינות (קודקודים)?`, opts:['כן','לא'], c:correct==='כן'?0:1, topic:'shapes-basic', sub:'corners'};
 }
 const SHAPE_PROPS_L3=[
-  {q:'למלבן יש...', opts:['4 צלעות שוות','2 זוגות צלעות שוות','3 צלעות','אין לו צלעות'], c:1},
-  {q:'מעוין הוא צורה עם...', opts:['4 צלעות שוות באורכן','3 צלעות','עיגול בתוכו','אין לו צלעות'], c:0},
-  {q:'איזו צורה תלת-ממדית דומה לקופסת נעליים?', opts:['כדור','תיבה (מלבן תלת מימדי)','גליל','חרוט'], c:1},
-  {q:'צורה סימטרית היא צורה ש...', opts:['אין לה צלעות','אפשר לחלק אותה לשני חלקים זהים','תמיד עגולה','גדולה מאוד'], c:1}
+  {q:'למלבן יש...', opts:['4 צלעות שוות','2 זוגות צלעות שוות','3 צלעות','אין לו צלעות'], c:1, topic:'shapes-props'},
+  {q:'מעוין הוא צורה עם...', opts:['4 צלעות שוות באורכן','3 צלעות','עיגול בתוכו','אין לו צלעות'], c:0, topic:'shapes-props'},
+  {q:'איזו צורה תלת-ממדית דומה לקופסת נעליים?', opts:['כדור','תיבה (מלבן תלת מימדי)','גליל','חרוט'], c:1, topic:'shapes-props'},
+  {q:'במה ריבוע שונה ממלבן רגיל?', opts:['בריבוע כל הצלעות שוות','בריבוע יש 3 צלעות','בריבוע אין זוויות ישרות','אין שום הבדל'], c:0, topic:'shapes-props'},
+  {q:'כמה זוויות ישרות יש למלבן?', opts:['2','3','4','אף אחת'], c:2, topic:'shapes-props'},
+  {q:'צורה סימטרית היא צורה ש...', opts:['אין לה צלעות','אפשר לחלק אותה לשני חלקים זהים','תמיד עגולה','גדולה מאוד'], c:1, topic:'symmetry'},
+  {q:'כמה קווי סימטריה יש לריבוע?', opts:['1','2','4','8'], c:2, topic:'symmetry'},
+  {q:'כמה קווי סימטריה יש למלבן שאינו ריבוע?', opts:['1','2','3','4'], c:1, topic:'symmetry'},
+  {q:'כמה קווי סימטריה יש למשולש שווה צלעות?', opts:['1','2','3','6'], c:2, topic:'symmetry'},
+  {q:'כמה קווי סימטריה יש לעיגול?', opts:['1','2','4','אינסוף (הרבה מאוד)'], c:3, topic:'symmetry'},
+  {q:'כמה קווי סימטריה יש למשושה משוכלל (כל הצלעות שוות)?', opts:['2','3','6','12'], c:2, topic:'symmetry'},
+  {q:'קו סימטריה הוא קו ש...', opts:['מחלק את הצורה לשני חלקים שהם תמונת מראה','תמיד עובר דרך הפינות','תמיד אופקי','משנה את גודל הצורה'], c:0, topic:'symmetry'},
+  {q:'לאיזו צורה יש 5 צלעות?', opts:['מרובע','מחומש','משושה','משולש'], c:1, topic:'shapes-props'},
+  {q:'איזו מהצורות היא מרובע?', opts:['משולש','מלבן','עיגול','מחומש'], c:1, topic:'shapes-props'},
+  {q:'מה שם הצורה שיש לה 6 צלעות?', opts:['מחומש','משושה','מתומן','מרובע'], c:1, topic:'shapes-props'}
 ];
 function genGeoL3(){
-  const type=pick(['perimeter-square','perimeter-rect','props']);
+  const type=pick(['perimeter-square','perimeter-rect','props','props']);
   if(type==='perimeter-square'){
     const side=randInt(3,18), correct=side*4;
     const mcq=buildMCQ(correct,[side*2,side*3,correct+4,correct-4]);
@@ -602,7 +634,7 @@ function genGeoL3(){
     return {iconSvg:rectSvgLabeled(l,w,'#4FB6E8'), q:`מלבן עם אורך ${l} ורוחב ${w} - מה ההיקף?`, ...mcq, topic:'perimeter', worked:`דוגמה אחרת: מלבן עם אורך 6 ורוחב 3 - היקף = (אורך + רוחב) × 2 = (6+3) × 2 = 18.`};
   }
   const item=pick(SHAPE_PROPS_L3);
-  return {emoji:'🔷', q:item.q, opts:item.opts, c:item.c, topic:Math.random()<0.5?'symmetry':'shapes-props'};
+  return {emoji:'🔷', q:item.q, opts:item.opts, c:item.c, topic:item.topic};
 }
 const CONCEPT_L5_FIXED=[
   {q:'זווית ישרה שווה ל...', opts:['45 מעלות','90 מעלות','180 מעלות','360 מעלות'], c:1, topic:'angles'},
@@ -610,10 +642,30 @@ const CONCEPT_L5_FIXED=[
   {q:'הקו שעובר דרך מרכז המעגל ומחבר שתי נקודות עליו נקרא...', opts:['רדיוס','קוטר','היקף','זווית'], c:1, topic:'circle'},
   {q:'הקו ממרכז המעגל עד לשפה שלו נקרא...', opts:['קוטר','רדיוס','היקף','משיק'], c:1, topic:'circle'},
   {q:'לקובייה יש כמה פאות (צדדים)?', opts:['4','6','8','12'], c:1, topic:'solids'},
-  {q:'לקובייה יש כמה קודקודים?', opts:['4','6','8','12'], c:2, topic:'solids'}
+  {q:'לקובייה יש כמה קודקודים?', opts:['4','6','8','12'], c:2, topic:'solids'},
+  {q:'כמה צלעות (מקצועות) יש לקובייה?', opts:['6','8','10','12'], c:3, topic:'solids'},
+  {q:'לתיבה (קופסה) יש כמה פאות?', opts:['4','6','8','12'], c:1, topic:'solids'},
+  {q:'איזה גוף אין לו אף פאה שטוחה?', opts:['קובייה','תיבה','כדור','פירמידה'], c:2, topic:'solids'},
+  {q:'כמה פאות יש לפירמידה שהבסיס שלה ריבוע?', opts:['4','5','6','8'], c:1, topic:'solids'},
+  {q:'איזה גוף יש לו 6 פאות שכולן ריבועים זהים?', opts:['תיבה','קובייה','פירמידה','גליל'], c:1, topic:'solids'},
+  {q:'זווית קטנה מ-90 מעלות נקראת...', opts:['חדה','ישרה','קהה','שטוחה'], c:0, topic:'angles'},
+  {q:'זווית גדולה מ-90 מעלות וקטנה מ-180 מעלות נקראת...', opts:['חדה','ישרה','קהה','שטוחה'], c:2, topic:'angles'},
+  {q:'כמה זוויות ישרות יש בריבוע?', opts:['2','3','4','אף אחת'], c:2, topic:'angles'},
+  {q:'סכום הזוויות במרובע (למשל מלבן) הוא...', opts:['180 מעלות','270 מעלות','360 מעלות','90 מעלות'], c:2, topic:'angles'}
 ];
 function genGeoL5(){
-  const type=pick(['area-rect','area-square','area-triangle','area-triangle','perimeter-rect','fixed']);
+  const type=pick(['area-rect','area-square','area-triangle','area-triangle','perimeter-rect','fixed','angle-class','circle-calc']);
+  if(type==='angle-class'){
+    const deg=pick([20,30,45,60,75,80,90,100,110,120,135,150,170]);
+    const opts=['חדה','ישרה','קהה'], correct=deg<90?'חדה':(deg===90?'ישרה':'קהה');
+    return {emoji:'📐', q:`זווית של ${deg} מעלות היא זווית...`, opts, c:opts.indexOf(correct), topic:'angles'};
+  }
+  if(type==='circle-calc'){
+    const r=randInt(2,15), toDiam=Math.random()<0.5;
+    const val=toDiam?r:r*2, correct=toDiam?r*2:r;
+    const mcq=buildMCQ(correct,[correct+2,correct-1,val+2,val*2===correct?val*3:val*2,correct+4]);
+    return {emoji:'⭕', q: toDiam?`הרדיוס של מעגל הוא ${val}. מה הקוטר שלו?`:`הקוטר של מעגל הוא ${val}. מה הרדיוס שלו?`, ...mcq, topic:'circle', worked:`דוגמה אחרת: אם הרדיוס הוא 5, הקוטר הוא 5 × 2 = 10. אם הקוטר הוא 8, הרדיוס הוא 8 ÷ 2 = 4.`};
+  }
   if(type==='area-rect'){
     const l=randInt(4,24), w=randInt(3,18), correct=l*w;
     const mcq=buildMCQ(correct,[2*(l+w),l+w,correct+w,correct-l]);
@@ -1002,7 +1054,7 @@ function pairEngQuestion(list, promptTemplate, topic, emoji){
 
 /* ===================== QUIZ ENGINE ===================== */
 let currentKid=null, currentSubject=null, currentQuestions=[], currentIndex=0, currentScore=0, sessionStartTime=null;
-let progressByKid={}, history=[], reports=[], starsByKid={}, timeByKid={};
+let progressByKid={}, history=[], reports=[], starsByKid={}, timeByKid={}, pendingSync=[], currentTopicKey=null, roundTopicStats={};
 const STORAGE_KEY='summerTrail_v1';
 
 /* ===== Google Sheets sync (optional) =====
@@ -1012,17 +1064,20 @@ const STORAGE_KEY='summerTrail_v1';
 const SHEETS_WEBHOOK_URL = '';
 function sendToSheet(record){
   if(!SHEETS_WEBHOOK_URL) return;
-  try{
-    fetch(SHEETS_WEBHOOK_URL, {
-      method:'POST',
-      mode:'no-cors',
-      headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify(record)
-    }).catch(()=>{});
-  }catch(e){}
+  pendingSync.push(record); saveState(); flushPending();
+}
+function flushPending(){
+  if(!SHEETS_WEBHOOK_URL || !pendingSync.length) return;
+  pendingSync.slice().forEach(rec=>{
+    try{
+      fetch(SHEETS_WEBHOOK_URL, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body:JSON.stringify(rec)})
+        .then(()=>{ pendingSync=pendingSync.filter(r=>r.id!==rec.id); saveState(); })
+        .catch(()=>{});
+    }catch(e){}
+  });
 }
 function saveState(){
-  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify({progressByKid,history,reports,starsByKid,timeByKid})); }catch(e){}
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify({progressByKid,history,reports,starsByKid,timeByKid,pendingSync})); }catch(e){}
 }
 function loadState(){
   try{
@@ -1034,12 +1089,13 @@ function loadState(){
       reports=data.reports||[];
       starsByKid=data.starsByKid||{};
       timeByKid=data.timeByKid||{};
+      pendingSync=data.pendingSync||[];
     }
   }catch(e){}
 }
 function clearAllData(){
   if(confirm('לאפס את כל ההתקדמות והכוכבים של כל הילדים? לא ניתן לבטל.')){
-    progressByKid={}; history=[]; reports=[]; starsByKid={}; timeByKid={};
+    progressByKid={}; history=[]; reports=[]; starsByKid={}; timeByKid={}; pendingSync=[];
     try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
     updateStarsChip(); renderDashboard();
   }
@@ -1057,6 +1113,78 @@ function formatDuration(totalSeconds){
   const minText = remMin>0 ? ' ו-'+(remMin===1?'דקה אחת':remMin+' דקות') : '';
   return hoursText+minText;
 }
+
+/* ===== Topic selection (test prep) ===== */
+const TOPIC_LABELS={
+  math:{addition:'חיבור',subtraction:'חיסור',multiplication:'כפל',division:'חילוק',timestable:'לוח הכפל',fractions:'שברים',percentages:'אחוזים',wordproblems:'בעיות מילוליות',sequence:'סדר מספרים',hundreds:'מאות'},
+  geo:{sides:'צלעות',corners:'פינות (קודקודים)',perimeter:'היקף',area:'שטח',symmetry:'סימטריה','shapes-props':'תכונות של צורות',angles:'זוויות',circle:'מעגל',solids:'גופים תלת-ממדיים','shapes-basic':'צורות'},
+  heb:{plural:'יחיד ורבים',gender:'זכר ונקבה',categories:'קבוצות מילים',partofspeech:'חלקי דיבר',reading:'הבנת הנקרא',antonym:'ניגודים',synonym:'מילים נרדפות',tense:'זמנים (עבר/הווה/עתיד)',binyan:'בניינים',shoresh:'שורשים',idiom:'ביטויים',spelling:'כתיב נכון',letters:'אותיות'},
+  eng:{vocab:'אוצר מילים',spelling:'איות',phonics:'אותיות וצלילים',tobe:'to be',plural:'רבים',opposites:'הפכים',dosdoes:'do / does',pasttense:'זמן עבר'}
+};
+const TOPIC_MENU={
+  math:{L2:['addition','subtraction','multiplication','sequence','wordproblems'],
+        L3:['addition','subtraction','hundreds','multiplication','division','wordproblems'],
+        L5:['addition','subtraction','multiplication','division','timestable','fractions','percentages','wordproblems']},
+  geo:{L2:['sides','corners','perimeter'],L3:['perimeter','symmetry','shapes-props'],L5:['area','perimeter','angles','circle','solids']},
+  heb:{L2:['plural','gender','categories','partofspeech','reading','antonym','tense'],
+       L3:['gender','plural','synonym','antonym','tense','partofspeech'],
+       L5:['plural','partofspeech','tense','binyan','shoresh','idiom','spelling']},
+  eng:{L2:['vocab','spelling','phonics'],L3:['vocab','spelling','phonics'],L5:['vocab','tobe','plural','opposites','dosdoes','pasttense']}
+};
+function topicKeyOf(q){ return q.sub||q.topic||'other'; }
+function topicLabel(subject,key){ return (TOPIC_LABELS[subject]&&TOPIC_LABELS[subject][key])||key; }
+function genFnFor(subject,level){
+  if(subject==='eng' && (level==='L2'||level==='L3')) return genEngPractice;
+  return GEN_MAP[subject][level];
+}
+function buildTopicSet(genFn, n, topicKey){
+  const found=[], seenQ=new Set(), seenFull=new Set(), extras=[];
+  let attempts=0;
+  while(found.length<n && attempts<5000){
+    attempts++;
+    const cand=genFn();
+    if(topicKeyOf(cand)!==topicKey) continue;
+    const full=cand.q+'|'+[...cand.opts].sort().join(',');
+    if(seenFull.has(full)) continue;
+    seenFull.add(full);
+    if(!seenQ.has(cand.q)){ seenQ.add(cand.q); found.push(cand); }
+    else extras.push(cand);
+  }
+  if(found.length>=6) return shuffle(found.slice(0,n));
+  // very few distinct stems (generic stems like "which word is an animal?") - the answer options provide the variety
+  while(found.length<n && extras.length) found.push(extras.shift());
+  if(!found.length) return buildQuizSet(genFn,n);
+  if(found.length>=n) return shuffle(found);
+  const padded=[...found];
+  while(padded.length<10) padded.push(found[padded.length%found.length]);
+  return shuffle(padded);
+}
+function topicAccuracy(kidKey,subject,key){
+  let c=0,t=0;
+  history.forEach(h=>{ if(h.kid===kidKey && h.subject===subject && h.topicStats && h.topicStats[key]){ c+=h.topicStats[key][0]; t+=h.topicStats[key][1]; } });
+  return t>=3 ? Math.round(c/t*100) : null;
+}
+function openSubject(subject){
+  currentSubject=subject;
+  const level=KIDS[currentKid].level;
+  if(subject==='eng' && (level==='L2'||level==='L3')){ showEnglishLearn(); return; }
+  openTopicMenu(subject);
+}
+function openTopicMenu(subject){
+  currentSubject=subject;
+  const level=KIDS[currentKid].level;
+  document.getElementById('topicsTitle').textContent=SUBJECT_NAMES[subject]+' - מה נתרגל?';
+  const wrap=document.getElementById('topicsList');
+  let html=`<button class="topic-btn mixed" onclick="startQuiz('${subject}',null)">🎲 מעורב - כל הנושאים</button>`;
+  (TOPIC_MENU[subject][level]||[]).forEach(key=>{
+    const acc=topicAccuracy(currentKid,subject,key);
+    const badge=acc===null?'':`<span class="topic-acc ${acc<60?'low':(acc>=85?'high':'')}">${acc}%</span>`;
+    html+=`<button class="topic-btn" onclick="startQuiz('${subject}','${key}')"><span>${topicLabel(subject,key)}</span>${badge}</button>`;
+  });
+  wrap.innerHTML=html;
+  showScreen('screen-topics');
+}
+
 const GEN_MAP={
   math:{L2:genMathL2,L3:genMathL3,L5:genMathL5},
   geo:{L2:genGeoL2,L3:genGeoL3,L5:genGeoL5},
@@ -1116,11 +1244,11 @@ function updateHubProgress(){
     else { fillEl.style.width=Math.round(val*100)+'%'; labelEl.textContent='הכי טוב: '+Math.round(val*100)+'%'; }
   });
 }
-function startQuiz(subject){
-  currentSubject=subject; const level=KIDS[currentKid].level;
-  if(subject==='eng' && (level==='L2'||level==='L3')){ showEnglishLearn(); return; }
-  const genFn=GEN_MAP[subject][level];
-  currentQuestions=buildQuizSet(genFn,20); currentIndex=0; currentScore=0; sessionStartTime=Date.now();
+function startQuiz(subject, topicKey){
+  currentSubject=subject; currentTopicKey=topicKey||null;
+  const level=KIDS[currentKid].level, genFn=genFnFor(subject,level);
+  currentQuestions = currentTopicKey ? buildTopicSet(genFn,20,currentTopicKey) : buildQuizSet(genFn,20);
+  currentIndex=0; currentScore=0; roundTopicStats={}; sessionStartTime=Date.now();
   showScreen('screen-quiz'); renderQuestion();
 }
 function renderQuestion(){
@@ -1164,6 +1292,7 @@ function replayQuizAudio(){
 }
 function selectAnswer(picked,correct,btnEl){
   const allBtns=document.querySelectorAll('#optionsWrap .opt'); allBtns.forEach(b=>b.disabled=true);
+  { const tk=topicKeyOf(currentQuestions[currentIndex]); const ts=(roundTopicStats[tk]=roundTopicStats[tk]||[0,0]); ts[1]++; if(picked===correct) ts[0]++; }
   const fb=document.getElementById('feedback');
   if(picked===correct){
     btnEl.classList.add('correct'); fb.textContent='כל הכבוד! תשובה נכונה 🎉'; fb.classList.add('good');
@@ -1189,7 +1318,8 @@ function finishQuiz(){
   progressByKid[currentKid][currentSubject]=Math.max(prev,frac);
   const seconds = sessionStartTime ? Math.round((Date.now()-sessionStartTime)/1000) : 0;
   timeByKid[currentKid]=(timeByKid[currentKid]||0)+seconds;
-  const record={kid:currentKid, kidName:KIDS[currentKid].name, subject:currentSubject, subjectName:SUBJECT_NAMES[currentSubject], score:currentScore, total:currentQuestions.length, date:new Date().toISOString(), seconds};
+  const topicsArr=Object.keys(roundTopicStats).map(k=>({key:k,label:topicLabel(currentSubject,k),correct:roundTopicStats[k][0],total:roundTopicStats[k][1]}));
+  const record={id:Date.now()+'-'+Math.random().toString(36).slice(2,7), kid:currentKid, kidName:KIDS[currentKid].name, subject:currentSubject, subjectName:SUBJECT_NAMES[currentSubject], mode:currentTopicKey?topicLabel(currentSubject,currentTopicKey):'מעורב', topicKey:currentTopicKey, score:currentScore, total:currentQuestions.length, date:new Date().toISOString(), seconds, topicStats:roundTopicStats, topics:topicsArr};
   history.push(record);
   if(history.length>300) history=history.slice(-300);
   saveState();
@@ -1201,15 +1331,11 @@ function finishQuiz(){
   else if(frac>=0.5){emoji='😊';msg='יפה מאוד, תמשיך/י להתאמן!';starCount=2;}
   else {emoji='💪';msg='התחלה טובה! ננסה שוב?';starCount=1;}
   document.getElementById('resultEmoji').textContent=emoji;
-  document.getElementById('resultMsg').textContent=msg+' ('+SUBJECT_NAMES[currentSubject]+')';
+  document.getElementById('resultMsg').textContent=msg+' ('+SUBJECT_NAMES[currentSubject]+(currentTopicKey?' - '+topicLabel(currentSubject,currentTopicKey):'')+')';
   document.getElementById('resultStars').innerHTML='⭐'.repeat(starCount)+'☆'.repeat(3-starCount);
   showScreen('screen-result');
 }
-function retryQuiz(){
-  const level=KIDS[currentKid].level;
-  if(currentSubject==='eng' && (level==='L2'||level==='L3')){ startEngPractice(); return; }
-  startQuiz(currentSubject);
-}
+function retryQuiz(){ startQuiz(currentSubject, currentTopicKey); }
 function updateStarsChip(){
   const count = currentKid ? (starsByKid[currentKid]||0) : 0;
   document.getElementById('starsChip').textContent='⭐ '+count;
@@ -1280,13 +1406,21 @@ function replayDeckAudio(){
 }
 function deckPrev(){ const items=DECKS[deckCategory]; deckIndex=(deckIndex-1+items.length)%items.length; renderDeck(); }
 function deckNext(){ const items=DECKS[deckCategory]; deckIndex=(deckIndex+1)%items.length; renderDeck(); }
-function startEngPractice(){
-  currentSubject='eng';
-  currentQuestions=buildQuizSet(genEngPractice,20); currentIndex=0; currentScore=0; sessionStartTime=Date.now();
-  showScreen('screen-quiz'); renderQuestion();
-}
+function startEngPractice(){ openTopicMenu('eng'); }
 
 /* ===== Parent dashboard ===== */
+function kidTopicSummary(kidKey){
+  const out={};
+  history.forEach(h=>{
+    if(h.kid!==kidKey || !h.topicStats) return;
+    out[h.subject]=out[h.subject]||{};
+    Object.keys(h.topicStats).forEach(k=>{
+      const a=out[h.subject][k]=out[h.subject][k]||[0,0];
+      a[0]+=h.topicStats[k][0]; a[1]+=h.topicStats[k][1];
+    });
+  });
+  return out;
+}
 function openDashboard(){ renderDashboard(); showScreen('screen-dashboard'); }
 function shareKidReport(kidKey){
   const k=KIDS[kidKey], prog=progressByKid[kidKey]||{};
@@ -1303,12 +1437,19 @@ function shareKidReport(kidKey){
     const val=prog[sub];
     text+=`${SUBJECT_NAMES[sub]}: ${val!==undefined?Math.round(val*100)+'%':'עוד לא שיחק/ה'}\n`;
   });
+  const tsum=kidTopicSummary(kidKey), weak=[];
+  Object.keys(tsum).forEach(sub=>Object.keys(tsum[sub]).forEach(k=>{ const [c,t]=tsum[sub][k]; if(t>=5 && c/t<0.7) weak.push({sub,k,pct:Math.round(c/t*100)}); }));
+  weak.sort((a,b)=>a.pct-b.pct);
+  if(weak.length){
+    text+='\nנושאים לחיזוק:\n';
+    weak.slice(0,6).forEach(w=>{ text+=`${SUBJECT_NAMES[w.sub]} - ${topicLabel(w.sub,w.k)}: ${w.pct}%\n`; });
+  }
   const recent=allKidHistory.slice(-5).reverse();
   if(recent.length){
     text+='\n5 המשחקים האחרונים:\n';
     recent.forEach(h=>{
       const d=new Date(h.date);
-      text+=`${d.toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit'})} - ${SUBJECT_NAMES[h.subject]} - ${h.score}/${h.total}\n`;
+      text+=`${d.toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit'})} - ${SUBJECT_NAMES[h.subject]}${h.mode&&h.mode!=='מעורב'?' ('+h.mode+')':''} - ${h.score}/${h.total}\n`;
     });
   }
   if(navigator.share){
@@ -1345,6 +1486,17 @@ function renderDashboard(){
       html+=`<div class="dash-tag">${SUBJECT_NAMES[sub]}: ${pct}</div>`;
     });
     html+='</div>';
+    const tsum=kidTopicSummary(kidKey);
+    Object.keys(tsum).forEach(sub=>{
+      const keys=Object.keys(tsum[sub]).sort((a,b)=>(tsum[sub][a][0]/tsum[sub][a][1])-(tsum[sub][b][0]/tsum[sub][b][1]));
+      html+=`<div style="margin-top:12px;font-size:12px;font-weight:900;color:#6b7a82;">${SUBJECT_NAMES[sub]} - לפי נושא:</div><div class="dash-tags" style="margin-top:6px;">`;
+      keys.forEach(key=>{
+        const [c,t]=tsum[sub][key], pct=Math.round(c/t*100);
+        const bg=pct<60?'#FFE4E1':(pct>=85?'#DFF6E7':'var(--sand-deep)');
+        html+=`<div class="dash-tag" style="background:${bg};">${topicLabel(sub,key)}: ${pct}% <span style="opacity:.6;">(${c}/${t})</span></div>`;
+      });
+      html+='</div>';
+    });
     html+=`<button class="speak-btn small" style="background:var(--grass);box-shadow:0 3px 0 #3d8a5c;" onclick="shareKidReport('${kidKey}')">📤 שלח דוח על ${k.name}</button>`;
     const kidHistory=allKidHistory.slice(-8).reverse();
     if(kidHistory.length){
@@ -1353,7 +1505,7 @@ function renderDashboard(){
         const d=new Date(h.date);
         const dateStr=d.toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'});
         const timeStr = h.seconds ? ' · '+formatDuration(h.seconds) : '';
-        html+=`<div class="dash-history-row"><span>${SUBJECT_NAMES[h.subject]}</span><span>${h.score}/${h.total}${timeStr}</span><span>${dateStr}</span></div>`;
+        html+=`<div class="dash-history-row"><span>${SUBJECT_NAMES[h.subject]}${h.mode&&h.mode!=='מעורב'?' - '+h.mode:''}</span><span>${h.score}/${h.total}${timeStr}</span><span>${dateStr}</span></div>`;
       });
       html+='</div>';
     } else {
@@ -1379,6 +1531,7 @@ function renderDashboard(){
 
 /* init */
 loadState();
+flushPending();
 updateStarsChip();
 goHome();
 </script>
